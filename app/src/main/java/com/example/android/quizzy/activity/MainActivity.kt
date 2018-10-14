@@ -1,7 +1,8 @@
-package com.example.android.quizzy
+package com.example.android.quizzy.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.example.android.quizzy.R
 
 class MainActivity : AppCompatActivity() {
 
