@@ -32,7 +32,7 @@ public class Utils {
      * checks if password is valid(6 characters or more)
      */
     public static boolean isValidPassword(String password){
-        return password.length() >= 6;
+        return password.length() >= Constants.MIN_PASSWORD;
     }
 
     /**
@@ -40,7 +40,7 @@ public class Utils {
      */
     public static boolean isValidName(String name){
         for(int i = 0; i < name.length(); i++){
-            if(!((name.charAt(i) >= 65 && name.charAt(i) <= 90) || ((name.charAt(i) >= 97 && name.charAt(i) <= 122))))
+            if(!((name.charAt(i) >= Constants.A_ASCICODE && name.charAt(i) <= Constants.Z_ASCICODE) || ((name.charAt(i) >= Constants.a_ASCICODE && name.charAt(i) <= Constants.z_ASCICODE))))
                 return false;
         }
         return true;
