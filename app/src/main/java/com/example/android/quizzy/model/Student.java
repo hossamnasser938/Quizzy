@@ -9,8 +9,12 @@ public class Student extends User {
     private String teacherTelephoneNumber;
 
 
-    public Student(@NonNull String firstName, @NonNull String lastName, @Nullable String academicYear, @Nullable String city, @NonNull String teacherTelephoneNumber) {
-        super(firstName, lastName, city);
+    public Student(@NonNull String id){
+        super(id);
+    }
+
+    public Student(@NonNull String id, @NonNull String firstName, @NonNull String lastName, @Nullable String academicYear, @Nullable String city, @NonNull String teacherTelephoneNumber) {
+        super(id, firstName, lastName, city);
         this.academicYear = academicYear;
         this.teacherTelephoneNumber = teacherTelephoneNumber;
     }

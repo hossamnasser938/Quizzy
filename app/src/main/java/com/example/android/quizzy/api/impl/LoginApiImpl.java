@@ -32,7 +32,7 @@ public class LoginApiImpl implements LoginApi {
             return RxFirebaseDatabase.setValue(reference, user);
         }
         else if(user instanceof Student){
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY).child(((Student) user).getTeacherTelephoneNumber()).child(Constants.STUDENTS_KEY).push();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY).child(((Student) user).getTeacherTelephoneNumber()).child(Constants.STUDENTS_KEY).child(user.getId());
             return RxFirebaseDatabase.setValue(reference, user);
         }
         return Completable.error(new Throwable());

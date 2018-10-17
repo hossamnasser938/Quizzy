@@ -12,4 +12,14 @@ public class Constants {
     public static final String TEACHERS_KEY = "teachers";
     public static final String STUDENTS_KEY = "students";
 
+    public static final String EMAIL_KEY = "email";
+    public static final String PASSWORD_KEY = "password";
+    public static final String FIRST_NAME_KEY = "first_name";
+    public static final String LAST_NAME_KEY = "last_name";
+    public static final String CITY_KEY = "city";
+    public static final String TELEPHONE_NUMBER_KEY = "telephone_number";
+    public static final String SUBJECT_KEY = "subject";
+    public static final String ACADEMIC_YEAR_KEY = "academic_year";
+    public static final String TEACHER_TELEPHONE_NUMBER_KEY = "teacher_telephone_number";
+
 }
