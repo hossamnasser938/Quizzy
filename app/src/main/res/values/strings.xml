@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Quizzy</string>
+    <string name="teacher">Teacher</string>
+    <string name="student">Student</string>
+    <string name="login">Login</string>
+    <string name="next">Next</string>
+    <string name="register">Register</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="telephone_number">Telephone Number</string>
+    <string name="subject">Subject</string>
+    <string name="city">City</string>
+    <string name="teacher_telephone_number">Teacher Telephone Number</string>
+    <string name="academic_year">Academic Year</string>
+    <string name="click_here_to_register">Click here to register</string>
+    <string name="click_here_to_login">Click here to login</string>
 </resources>

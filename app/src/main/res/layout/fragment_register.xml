@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/register_email_edit_text"
+        style="@style/RegisterFields"
+        android:hint="@string/email" />
+
+    <EditText
+        android:id="@+id/register_password_edit_text"
+        style="@style/RegisterFields"
+        android:inputType="textPassword"
+        android:hint="@string/password" />
+
+    <RadioGroup
+        style="@style/RegisterFields"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/default8_margin">
+        
+        <RadioButton
+            android:id="@+id/register_radio_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/teacher"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <RadioButton
+            android:id="@+id/register_radio_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" android:singleLine="" />
+        
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/register_error_text_view"
+        style="@style/RegisterFields"
+        android:visibility="gone"
+        android:textColor="@color/red" />
+
+    <ProgressBar
+        android:id="@+id/register_loading_progress_bar"
+        android:layout_width="@dimen/progress_bar_dimens"
+        android:layout_height="@dimen/progress_bar_dimens"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/next_button"
+        style="@style/RegisterFields"
+        android:layout_marginTop="@dimen/default16_margin"
+        android:text="@string/next" />
+
+    <TextView
+        android:id="@+id/click_login_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default16_margin"
+        android:text="@string/click_here_to_login"
+        android:textStyle="bold"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:gravity="center_horizontal" />
+
+</LinearLayout>
