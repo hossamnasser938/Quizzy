@@ -32,4 +32,6 @@
     <string name="error_login">Error occurs while Performing login, please try again later</string>
     <string name="error_register">Error occurs while Performing register, please try again later</string>
     <string name="signed_in">Signed in successfully</string>
+    <string name="teacher_with_same_number">There is a teacher with the same telephone number</string>
+    <string name="no_teacher_with_number">There is no teacher with this telephone number</string>
 </resources>

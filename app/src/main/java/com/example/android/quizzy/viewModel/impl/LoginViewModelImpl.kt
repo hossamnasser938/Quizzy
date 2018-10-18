@@ -1,6 +1,8 @@
 package com.example.android.quizzy.viewModel.impl
 
+import android.content.Context
 import android.util.Log
+import com.example.android.quizzy.R
 import com.example.android.quizzy.api.LoginApi
 import com.example.android.quizzy.model.Student
 import com.example.android.quizzy.model.Teacher
@@ -20,38 +22,72 @@ class LoginViewModelImpl : LoginViewModel {
     private val TAG = "LoginViewModelImpl"
 
     private val api : LoginApi
+    private val context : Context
 
-    constructor(api: LoginApi) {
+    constructor(context: Context, api: LoginApi) {
         this.api = api
+        this.context = context
     }
 
     override fun register(body: HashMap<String, Any>): Completable {
         Log.d(TAG, "register executes")
-        return api.registerInFirebaseAuth(body.get(Constants.EMAIL_KEY) as String, body.get(Constants.PASSWORD_KEY) as String)
-                .flatMapCompletable { AuthResult ->
-                    Log.d(TAG, "registered in fire-base auth")
-                    val user : User
+        //check if the user is a teacher or a student
+        val teacherUser : Boolean
+        if(body.containsKey(Constants.TELEPHONE_NUMBER_KEY)){
+            Log.d(TAG, "register as teacher")
+            teacherUser = true
+        }
+        else if(body.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)){
+            Log.d(TAG, "register as student")
+            teacherUser = false
+        }
+        else{
+            Log.d(TAG, "not a teacher neither a student")
+            throw Exception()
+        }
 
-                    if(body.containsKey(Constants.TELEPHONE_NUMBER_KEY)){
-                        Log.d(TAG, "registered as teacher")
-                        user = Teacher(AuthResult.user.uid)
-                    }
-
-                    else if(body.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)){
-                        Log.d(TAG, "registered as student")
-                        user = Student(AuthResult.user.uid)
-                    }
-
-                    else{
-                        Log.d(TAG, "not a teacher neither a student")
-                        throw Exception()
-                    }
-
-                    addUserInfo(user, body)
-
-                    api.registerInFirebaseDatabase(user)
-
+        if(teacherUser){
+            //teacher
+            return api.teacherExists(body[Constants.TELEPHONE_NUMBER_KEY] as String).flatMapCompletable {
+                if(it){
+                    Log.d(TAG, "teacher already exists")
+                    Completable.error(Throwable(context.getString(R.string.teacher_with_same_number)))
                 }
+                else{
+                    api.registerInFirebaseAuth(body.get(Constants.EMAIL_KEY) as String, body.get(Constants.PASSWORD_KEY) as String)
+                            .flatMapCompletable { AuthResult ->
+                                Log.d(TAG, "registered in fire-base auth")
+                                val user : User = Teacher(AuthResult.user.uid)
+
+                                addUserInfo(user, body)
+
+                                api.registerInFirebaseDatabase(user)
+
+                            }
+                }
+            }
+        }
+        else{
+            //student
+            return api.teacherExists(body[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String).flatMapCompletable {
+                if(it){
+                    api.registerInFirebaseAuth(body.get(Constants.EMAIL_KEY) as String, body.get(Constants.PASSWORD_KEY) as String)
+                            .flatMapCompletable { AuthResult ->
+                                Log.d(TAG, "registered in fire-base auth")
+                                val user : User = Student(AuthResult.user.uid)
+
+                                addUserInfo(user, body)
+
+                                api.registerInFirebaseDatabase(user)
+
+                            }
+                }
+                else {
+                    Log.d(TAG, "teacher does not exist")
+                    Completable.error(Throwable(context.getString(R.string.no_teacher_with_number)))
+                }
+            }
+        }
 
     }
 

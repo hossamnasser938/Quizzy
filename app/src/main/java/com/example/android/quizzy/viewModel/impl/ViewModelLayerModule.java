@@ -1,5 +1,7 @@
 package com.example.android.quizzy.viewModel.impl;
 
+import android.content.Context;
+
 import com.example.android.quizzy.api.LoginApi;
 import com.example.android.quizzy.viewModel.LoginViewModel;
 
@@ -13,8 +15,8 @@ public class ViewModelLayerModule {
 
     @Provides
     @Singleton
-    LoginViewModel provideLoginViewModel(LoginApi api){
-        return new LoginViewModelImpl(api);
+    LoginViewModel provideLoginViewModel(Context context, LoginApi api){
+        return new LoginViewModelImpl(context, api);
     }
 
 }
