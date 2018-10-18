@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-//TODO:include components modules
 @Module(includes = {ApiLayerModule.class, ViewModelLayerModule.class})
 public class AppModule {
 
