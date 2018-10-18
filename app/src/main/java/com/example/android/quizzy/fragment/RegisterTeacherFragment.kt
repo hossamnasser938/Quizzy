@@ -14,6 +14,7 @@ import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_register_student.*
 import kotlinx.android.synthetic.main.fragment_register_teacher.*
 import javax.inject.Inject
 
@@ -70,12 +71,21 @@ class RegisterTeacherFragment : Fragment() {
             if(!validateUserInputs())
                 return@setOnClickListener
 
+            //show loading progress bar
+            register_teacher_loading_progress_bar.visibility = View.VISIBLE
+
             disposable = loginViewModel.register(userInputs).subscribe({
                 Log.d(TAG, "registered successfully")
+                //hide loading progress bar
+                register_teacher_loading_progress_bar.visibility = View.GONE
+
                 val intent = Intent(activity, MainActivity::class.java)
                 startActivity(intent)
             }, {
                 Log.d(TAG, "error registering : " + it.message)
+                //hide loading progress bar
+                register_teacher_loading_progress_bar.visibility = View.GONE
+
                 showErrorMessage(it.message)
             })
         }

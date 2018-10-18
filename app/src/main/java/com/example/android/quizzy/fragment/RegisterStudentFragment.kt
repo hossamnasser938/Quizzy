@@ -71,12 +71,22 @@ class RegisterStudentFragment : Fragment() {
             if(!validateUserInputs())
                 return@setOnClickListener
 
+            //show loading progress bar
+            register_student_loading_progress_bar.visibility = View.VISIBLE
+
             disposable = loginViewModel.register(userInputs).subscribe({
                 Log.d(TAG, "registered successfully")
+                //hide loading progress bar
+                register_student_loading_progress_bar.visibility = View.GONE
+
+                //open Main Activity
                 val intent = Intent(activity, MainActivity::class.java)
                 startActivity(intent)
             }, {
                 Log.d(TAG, "error registering : " + it.message)
+                //hide loading progress bar
+                register_student_loading_progress_bar.visibility = View.GONE
+
                 showErrorMessage(it.message)
             })
         }
