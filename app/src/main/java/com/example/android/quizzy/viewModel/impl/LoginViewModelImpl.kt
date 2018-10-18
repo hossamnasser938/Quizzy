@@ -7,7 +7,9 @@ import com.example.android.quizzy.model.Teacher
 import com.example.android.quizzy.model.User
 import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.viewModel.LoginViewModel
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -23,10 +25,10 @@ class LoginViewModelImpl : LoginViewModel {
         this.api = api
     }
 
-    override fun register(body: HashMap<String, Any>): Maybe<FirebaseUser> {
+    override fun register(body: HashMap<String, Any>): Completable {
         Log.d(TAG, "register executes")
         return api.registerInFirebaseAuth(body.get(Constants.EMAIL_KEY) as String, body.get(Constants.PASSWORD_KEY) as String)
-                .flatMap { AuthResult ->
+                .flatMapCompletable { AuthResult ->
                     Log.d(TAG, "registered in fire-base auth")
                     val user : User
 
@@ -48,10 +50,7 @@ class LoginViewModelImpl : LoginViewModel {
                     addUserInfo(user, body)
 
                     api.registerInFirebaseDatabase(user)
-                            .toMaybe<FirebaseUser>().flatMap {
-                                Log.d(TAG, "registered in fire-base database")
-                                Maybe.just(it)
-                            }
+
                 }
 
     }

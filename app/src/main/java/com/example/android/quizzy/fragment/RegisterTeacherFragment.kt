@@ -14,7 +14,6 @@ import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_register_student.*
 import kotlinx.android.synthetic.main.fragment_register_teacher.*
 import javax.inject.Inject
 
