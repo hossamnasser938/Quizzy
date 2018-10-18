@@ -43,16 +43,6 @@ class LoginFragment : Fragment() {
         setClickRegisterOnClickListener()
     }
 
-    override fun onPause() {
-        super.onPause()
-        try {
-            disposable.dispose()
-        }
-        catch (e : UninitializedPropertyAccessException){
-            //Just stop
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         activity?.title = getString(R.string.login)
@@ -63,6 +53,7 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "login button clicked")
             //Do not respond to user clicks for now
             it.isClickable = false
+
             //hide error text view
             login_error_text_view.visibility = View.GONE
 
@@ -92,6 +83,7 @@ class LoginFragment : Fragment() {
                 showErrorMessage(R.string.invalid_password)
                 return@setOnClickListener
             }
+
             //show loading progress bar
             login_loading_progress_bar.visibility = View.VISIBLE
 
@@ -102,16 +94,20 @@ class LoginFragment : Fragment() {
 
     private fun callLoginApi(body : HashMap<String, String>){
         disposable = loginViewModel.login(body).subscribe({
+            Log.d(TAG, "logged in")
             //hide loading progress bar
             login_loading_progress_bar.visibility = View.GONE
-            //Open Home Activity with user info
+
+            //Open Main Activity with user info
             val intent = Intent(context, MainActivity::class.java)
             startActivity(intent)
             activity?.finish()
             Toast.makeText(activity, R.string.signed_in, Toast.LENGTH_SHORT).show()
         }, {
+            Log.d(TAG, "Error logging : " + it.message)
             //hide loading progress bar
             login_loading_progress_bar.visibility = View.GONE
+
             //show error message
             showErrorMessage(it.message)
         })

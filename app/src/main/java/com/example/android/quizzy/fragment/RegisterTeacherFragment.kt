@@ -63,20 +63,22 @@ class RegisterTeacherFragment : Fragment() {
     }
 
     private fun setRegisterButtonClickListener(userInputs : HashMap<String, Any>){
-        if(!extractUserInputs(userInputs))
-            return
+        register_teacher_button.setOnClickListener {
+            if(!extractUserInputs(userInputs))
+                return@setOnClickListener
 
-        if(!validateUserInputs())
-            return
+            if(!validateUserInputs())
+                return@setOnClickListener
 
-        disposable = loginViewModel.register(userInputs).subscribe({
-            Log.d(TAG, "registered successfully")
-            val intent = Intent(activity, MainActivity::class.java)
-            startActivity(intent)
-        }, {
-            Log.d(TAG, "error registering : " + it.message)
-            showErrorMessage(it.message)
-        })
+            disposable = loginViewModel.register(userInputs).subscribe({
+                Log.d(TAG, "registered successfully")
+                val intent = Intent(activity, MainActivity::class.java)
+                startActivity(intent)
+            }, {
+                Log.d(TAG, "error registering : " + it.message)
+                showErrorMessage(it.message)
+            })
+        }
     }
 
     private fun extractUserInputs(userInputs: HashMap<String, Any>) : Boolean{

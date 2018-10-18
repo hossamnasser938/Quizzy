@@ -2,6 +2,7 @@ package com.example.android.quizzy.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,8 +41,10 @@ class RegisterFragment : Fragment() {
 
     private fun setNextButtonOnClickListener(){
         next_button.setOnClickListener {
+            Log.d(TAG, "next button clicked")
             //Do not respond to user clicks for now
             it.isClickable = false
+
             //hide error text view
             register_error_text_view.visibility = View.GONE
 
@@ -93,7 +96,6 @@ class RegisterFragment : Fragment() {
             transient.openFragment(LoginFragment())
         }
     }
-
 
     /**
      * extract user inputs in a HashMap
