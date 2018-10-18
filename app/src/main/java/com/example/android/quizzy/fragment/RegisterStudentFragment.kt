@@ -84,7 +84,7 @@ class RegisterStudentFragment : Fragment() {
 
     private fun extractUserInputs(userInputs: HashMap<String, Any>) : Boolean{
         val firstName = register_student_first_name_edit_text.text.toString().trim()
-        if(!firstName.isEmpty()) {
+        if(firstName.isEmpty()) {
             showErrorMessage(R.string.required_student_fields)
             return false
         }
@@ -93,7 +93,7 @@ class RegisterStudentFragment : Fragment() {
         }
 
         val lastName = register_student_last_name_edit_text.text.toString().trim()
-        if(!lastName.isEmpty()) {
+        if(lastName.isEmpty()) {
             showErrorMessage(R.string.required_student_fields)
             return false
         }
@@ -102,7 +102,7 @@ class RegisterStudentFragment : Fragment() {
         }
 
         val teacherTelephoneNumber = register_student_teacher_telephone_number_edit_text.text.toString().trim()
-        if(!teacherTelephoneNumber.isEmpty()) {
+        if(teacherTelephoneNumber.isEmpty()) {
             showErrorMessage(R.string.required_student_fields)
             return false
         }
