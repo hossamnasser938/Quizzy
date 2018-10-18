@@ -65,18 +65,6 @@ class LoginViewModelImpl : LoginViewModel {
 
     }
 
-    override fun checkEmptyInputs(vararg inputs: String): Boolean {
-
-        for(input in inputs){
-            if(input.isEmpty()){
-                Log.d(TAG, "empty input")
-                return false
-            }
-        }
-        return true
-
-    }
-
     private fun addUserInfo(user : User, body: HashMap<String, Any>){
 
         if(body.containsKey(Constants.FIRST_NAME_KEY)){

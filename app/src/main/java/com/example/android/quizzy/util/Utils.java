@@ -3,6 +3,7 @@ package com.example.android.quizzy.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class Utils {
 
@@ -47,12 +48,21 @@ public class Utils {
     }
 
     /**
-     * checks if age is valid(larger than zero and not floating point value)
-     * @param age
+     * Checks if telephoneNumber is valid(consists of only numbers)
      */
-    public static boolean isValidAge(Double age){
-        if(age <= 0.0 || (age - age.intValue()) != 0.0) {
-            return false;
+    public static boolean isValidTelephoneNumber(String telephoneNumber){
+        for(int i = 0; i < telephoneNumber.length(); i++){
+            if(!((telephoneNumber.charAt(i) >= Constants.ZERO_ASCICODE && telephoneNumber.charAt(i) <= Constants.NINE_ASCICODE)))
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean checkEmptyInputs(String... inputs){
+        for(String input : inputs){
+            if(input.isEmpty())
+                Log.d(TAG, "empty input");
+                return false;
         }
         return true;
     }

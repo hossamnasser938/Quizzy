@@ -10,6 +10,5 @@ public interface LoginViewModel {
 
     Maybe<FirebaseUser> register(HashMap<String, Object> body);
     Maybe<FirebaseUser> login(HashMap<String, String> body);
-    Boolean checkEmptyInputs(String... inputs);
 
 }

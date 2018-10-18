@@ -7,11 +7,14 @@ public class Constants {
     public static final int Z_ASCICODE = 90;
     public static final int a_ASCICODE = 97;
     public static final int z_ASCICODE = 122;
+    public static final int ZERO_ASCICODE = 48;
+    public static final int NINE_ASCICODE = 57;
 
     public static final String USERS_KEY = "users";
     public static final String TEACHERS_KEY = "teachers";
     public static final String STUDENTS_KEY = "students";
 
+    public static final String INPUTS_KEY = "inputs";
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
     public static final String FIRST_NAME_KEY = "first_name";

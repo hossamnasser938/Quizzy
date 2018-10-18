@@ -1,5 +1,9 @@
 package com.example.android.quizzy;
 
+import com.example.android.quizzy.fragment.LoginFragment;
+import com.example.android.quizzy.fragment.RegisterStudentFragment;
+import com.example.android.quizzy.fragment.RegisterTeacherFragment;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -7,5 +11,9 @@ import dagger.Component;
 @Component(modules = {AppModule.class})
 @Singleton
 public interface AppComponent {
-    //TODO: Inject activities and fragments needing view models
+
+    void inject(LoginFragment loginFragment);
+    void inject(RegisterStudentFragment registerStudentFragment);
+    void inject(RegisterTeacherFragment registerTeacherFragment);
+
 }

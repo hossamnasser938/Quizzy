@@ -5,6 +5,8 @@
     <string name="login">Login</string>
     <string name="next">Next</string>
     <string name="register">Register</string>
+    <string name="register_as_student">Register As Student</string>
+    <string name="register_as_teacher">Register As Teacher</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="first_name">First Name</string>
@@ -16,4 +18,19 @@
     <string name="academic_year">Academic Year</string>
     <string name="click_here_to_register">Click here to register</string>
     <string name="click_here_to_login">Click here to login</string>
+    <string name="no_internet_connection">No internet connection,\nplease connect to the internet and try again</string>
+    <string name="forgot_email_password">Please Enter your email and password</string>
+    <string name="forgot_email_password_name">Please Enter your email, name, and password</string>
+    <string name="invalid_email">Please enter email with valid format</string>
+    <string name="invalid_name">Please enter name consisting of only letters</string>
+    <string name="invalid_telephone_number">Please enter telephone number consisting of only numbers</string>
+    <string name="invalid_password">Please enter password of 6 characters or more</string>
+    <string name="check_student_checker">Please check if you are a student or a teacher</string>
+    <string name="required_teacher_fields">Please enter at least first name, last name, subject and telephone number</string>
+    <string name="required_student_fields">Please enter at least first name, last name, and teacher telephone number</string>
+    <string name="logged_successfully">Logged Successfully</string>
+    <string name="you_are_logged">You are logged successfully</string>
+    <string name="error_login">Error occurs while Performing login, please try again later</string>
+    <string name="error_register">Error occurs while Performing register, please try again later</string>
+    <string name="signed_in">Signed in successfully</string>
 </resources>
