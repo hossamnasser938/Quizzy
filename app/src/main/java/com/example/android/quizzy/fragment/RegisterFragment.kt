@@ -87,7 +87,7 @@ class RegisterFragment : Fragment() {
             transient.openFragment(RegisterTeacherFragment.newInstance(inputs))
         }
         else{
-            showErrorMessage(R.string.check_student_checker)
+            showErrorMessage(R.string.check_student_teacher)
         }
     }
 

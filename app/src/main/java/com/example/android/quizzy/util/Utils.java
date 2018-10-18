@@ -60,9 +60,10 @@ public class Utils {
 
     public static boolean checkEmptyInputs(String... inputs){
         for(String input : inputs){
-            if(input.isEmpty())
+            if(input.isEmpty()) {
                 Log.d(TAG, "empty input");
                 return false;
+            }
         }
         return true;
     }
