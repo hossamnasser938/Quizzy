@@ -60,7 +60,7 @@ class RegisterTeacherFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        activity?.title = getString(R.string.register_as_student)
+        activity?.title = getString(R.string.register_as_teacher)
     }
 
     private fun setRegisterButtonClickListener(userInputs : HashMap<String, Any>){
