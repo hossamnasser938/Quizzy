@@ -7,13 +7,21 @@ import com.example.android.quizzy.model.User;
 import com.example.android.quizzy.util.Constants;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import durdinapps.rxfirebase2.RxFirebaseAuth;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 
 public class LoginApiImpl implements LoginApi {
 
@@ -46,4 +54,37 @@ public class LoginApiImpl implements LoginApi {
 
     }
 
+    /**
+     * checks if the teacher with the given telephone number exists in fire-base database or not
+     * @param teacherTelephoneNumber the given telephone number
+     * @return Single that indicate whether the teacher exists or not or an error occurred while accessing database
+     */
+    @Override
+    public Single<Boolean> teacherExists(final String teacherTelephoneNumber) {
+
+        final DatabaseReference teachersReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY);
+
+        return Single.create(new SingleOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(final SingleEmitter<Boolean> emitter) throws Exception {
+                teachersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild(teacherTelephoneNumber)){
+                            emitter.onSuccess(true);
+                        }
+                        else {
+                            emitter.onSuccess(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(new Throwable(databaseError.getMessage()));
+                    }
+                });
+            }
+        });
+
+    }
 }
