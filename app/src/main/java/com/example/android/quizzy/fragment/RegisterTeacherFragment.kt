@@ -70,6 +70,9 @@ class RegisterTeacherFragment : Fragment() {
             if(!validateUserInputs())
                 return@setOnClickListener
 
+            //hide error text
+            register_teacher_error_text_view.visibility = View.GONE
+
             //show loading progress bar
             register_teacher_loading_progress_bar.visibility = View.VISIBLE
 
