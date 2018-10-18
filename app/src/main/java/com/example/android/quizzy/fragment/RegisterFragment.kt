@@ -58,8 +58,8 @@ class RegisterFragment : Fragment() {
             userInput = getUserInput()
 
             //check empty email or password
-            if(!Utils.checkEmptyInputs(userInput[Constants.EMAIL_KEY] as String, userInput[Constants.FIRST_NAME_KEY] as String, userInput[Constants.LAST_NAME_KEY] as String, userInput[Constants.PASSWORD_KEY] as String)){
-                showErrorMessage(R.string.forgot_email_password_name)
+            if(!Utils.checkEmptyInputs(userInput[Constants.EMAIL_KEY] as String, userInput[Constants.PASSWORD_KEY] as String)){
+                showErrorMessage(R.string.forgot_email_password)
                 return@setOnClickListener
             }
 

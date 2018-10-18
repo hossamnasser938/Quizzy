@@ -20,7 +20,6 @@
     <string name="click_here_to_login">Click here to login</string>
     <string name="no_internet_connection">No internet connection,\nplease connect to the internet and try again</string>
     <string name="forgot_email_password">Please Enter your email and password</string>
-    <string name="forgot_email_password_name">Please Enter your email, name, and password</string>
     <string name="invalid_email">Please enter email with valid format</string>
     <string name="invalid_name">Please enter name consisting of only letters</string>
     <string name="invalid_telephone_number">Please enter telephone number consisting of only numbers</string>
