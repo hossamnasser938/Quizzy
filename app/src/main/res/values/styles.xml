@@ -38,7 +38,7 @@
     </style>
     
     <style name="Splash_theme" parent="AppTheme">
-        <item name="windowBackground">@drawable/splash</item>
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
 </resources>
