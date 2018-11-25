@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         //check if user logged or still needs
         if(FirebaseAuth.getInstance().currentUser == null){
-            val intent = Intent(applicationContext, LoginActivity::class.java)
+            val intent = Intent(applicationContext, WalkThroughActivty::class.java)
             startActivity(intent)
         }
     }
