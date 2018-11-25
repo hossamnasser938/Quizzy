@@ -1,6 +1,7 @@
 package com.example.android.quizzy.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.example.android.quizzy.R;
@@ -12,16 +13,27 @@ import java.util.List;
 
 public class  WalkThroughActivty extends FancyWalkthroughActivity {
 
-    FancyWalkthroughCard page1 = new FancyWalkthroughCard("No paper", "Quizzes can be done with no paper");
-    FancyWalkthroughCard page2 = new FancyWalkthroughCard("Digitize your work", "Quizzes can be digitalized through mobile application");
-    FancyWalkthroughCard page3 = new FancyWalkthroughCard("Keep in touch", "Keep connected with your students anywhere, and anytime");
-    FancyWalkthroughCard page4 = new FancyWalkthroughCard("Promote the process", "Generate reports on students' attitudes to promote the learning process");
+    Resources resources;
 
-    List<FancyWalkthroughCard> pages = new ArrayList<>();
+    FancyWalkthroughCard page1;
+    FancyWalkthroughCard page2;
+    FancyWalkthroughCard page3;
+    FancyWalkthroughCard page4;
+
+    List<FancyWalkthroughCard> pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        resources = this.getResources();
+
+        page1 = new FancyWalkthroughCard(resources.getString(R.string.page1_title), resources.getString(R.string.page1_description));
+        page2 = new FancyWalkthroughCard(resources.getString(R.string.page2_title), resources.getString(R.string.page2_description));
+        page3 = new FancyWalkthroughCard(resources.getString(R.string.page3_title), resources.getString(R.string.page3_description));
+        page4 = new FancyWalkthroughCard(resources.getString(R.string.page4_title), resources.getString(R.string.page4_description));
+
+        pages = new ArrayList<>();
 
         //Add cards to the list
         pages.add(page1);

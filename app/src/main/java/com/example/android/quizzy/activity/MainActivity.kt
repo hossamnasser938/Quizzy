@@ -16,8 +16,15 @@ class MainActivity : AppCompatActivity() {
 
         //check if user logged or still needs
         if(FirebaseAuth.getInstance().currentUser == null){
-            val intent = Intent(applicationContext, IntroActivity::class.java)
-            startActivity(intent)
+            //check sdk
+            if(android.os.Build.VERSION.SDK_INT < 19){
+                val intent = Intent(applicationContext, IntroActivity::class.java)
+                startActivity(intent)
+            }
+            else{
+                val intent = Intent(applicationContext, WalkThroughActivty::class.java)
+                startActivity(intent)
+            }
         }
     }
 }

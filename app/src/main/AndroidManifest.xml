@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.quizzy">
+    package="com.example.android.quizzy"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-sdk tools:overrideLibrary="com.shashank.sony.fancywalkthroughlib" />
 
     <application
         android:name=".QuizzyApplication"

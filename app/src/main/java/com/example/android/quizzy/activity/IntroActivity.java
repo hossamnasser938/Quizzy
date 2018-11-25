@@ -1,6 +1,5 @@
 package com.example.android.quizzy.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -19,16 +18,17 @@ public class IntroActivity extends AppIntro {
     AppIntroFragment page2;
     AppIntroFragment page3;
     AppIntroFragment page4;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         resources = this.getResources();
-        page1 = AppIntroFragment.newInstance("No paper", "Quizzes can be done with no paper", R.drawable.teacher, resources.getColor(R.color.colorPrimary));
-        page2 = AppIntroFragment.newInstance("Digitize your work", "Quizzes can be digitalized through mobile application", R.drawable.teacher, resources.getColor(R.color.colorPrimary));
-        page3 = AppIntroFragment.newInstance("Keep in touch", "Keep connected with your students anywhere, and anytime", R.drawable.teacher, resources.getColor(R.color.colorPrimary));
-        page4 = AppIntroFragment.newInstance("Promote the process", "Generate reports on students' attitudes to promote the learning process", R.drawable.teacher, resources.getColor(R.color.colorPrimary));
 
+        page1 = AppIntroFragment.newInstance(resources.getString(R.string.page1_title), resources.getString(R.string.page1_description), R.drawable.teacher, resources.getColor(R.color.colorPrimary));
+        page2 = AppIntroFragment.newInstance(resources.getString(R.string.page2_title), resources.getString(R.string.page2_description), R.drawable.teacher, resources.getColor(R.color.colorPrimary));
+        page3 = AppIntroFragment.newInstance(resources.getString(R.string.page3_title), resources.getString(R.string.page3_description), R.drawable.teacher, resources.getColor(R.color.colorPrimary));
+        page4 = AppIntroFragment.newInstance(resources.getString(R.string.page4_title), resources.getString(R.string.page4_description), R.drawable.teacher, resources.getColor(R.color.colorPrimary));
 
         //Add pages
         addSlide(page1);

@@ -34,4 +34,12 @@
     <string name="signed_in">Signed in successfully</string>
     <string name="teacher_with_same_number">There is a teacher with the same telephone number</string>
     <string name="no_teacher_with_number">There is no teacher with this telephone number</string>
+    <string name="page1_title">No paper</string>
+    <string name="page1_description">Quizzes can be done with no paper</string>
+    <string name="page2_title">Digitize your work</string>
+    <string name="page2_description">Quizzes can be digitalized through mobile application</string>
+    <string name="page3_title">Keep in touch</string>
+    <string name="page3_description">Keep connected with your students anywhere, and anytime</string>
+    <string name="page4_title">Promote the process</string>
+    <string name="page4_description">Generate reports on students\' attitudes to promote the learning process</string>
 </resources>
