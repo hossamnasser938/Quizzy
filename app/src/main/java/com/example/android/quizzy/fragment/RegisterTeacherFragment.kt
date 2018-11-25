@@ -81,7 +81,9 @@ class RegisterTeacherFragment : Fragment() {
                 //hide loading progress bar
                 register_teacher_loading_progress_bar.visibility = View.GONE
 
+                //Open Main Acivity and attach teacher's telephone number
                 val intent = Intent(activity, MainActivity::class.java)
+                intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, userInputs[Constants.TELEPHONE_NUMBER_KEY] as String)
                 startActivity(intent)
             }, {
                 Log.d(TAG, "error registering : " + it.message)
