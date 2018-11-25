@@ -10,7 +10,7 @@ import com.shashank.sony.fancywalkthroughlib.FancyWalkthroughCard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WalkThroughActivty extends FancyWalkthroughActivity {
+public class  WalkThroughActivty extends FancyWalkthroughActivity {
 
     FancyWalkthroughCard page1 = new FancyWalkthroughCard("No paper", "Quizzes can be done with no paper");
     FancyWalkthroughCard page2 = new FancyWalkthroughCard("Digitize your work", "Quizzes can be digitalized through mobile application");

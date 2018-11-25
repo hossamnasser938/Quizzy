@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.WalkThroughActivty"/>
+        <activity android:name=".activity.IntroActivity"/>
         <activity android:name=".activity.LoginActivity"/>
     </application>
 
