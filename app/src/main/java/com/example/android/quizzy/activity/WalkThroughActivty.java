@@ -12,24 +12,26 @@ import java.util.List;
 
 public class WalkThroughActivty extends FancyWalkthroughActivity {
 
-    FancyWalkthroughCard card1 = new FancyWalkthroughCard("No paper", "Quizzes can be done with no paper");
-    FancyWalkthroughCard card2 = new FancyWalkthroughCard("Digitize your work", "Quizzes can be digitalized through mobile application");
-    FancyWalkthroughCard card3 = new FancyWalkthroughCard("Keep in touch", "Keep connected with your students anywhere, and anytime");
-    FancyWalkthroughCard card4 = new FancyWalkthroughCard("Promote the process", "Generate reports on students' attitudes to promote the learning process");
+    FancyWalkthroughCard page1 = new FancyWalkthroughCard("No paper", "Quizzes can be done with no paper");
+    FancyWalkthroughCard page2 = new FancyWalkthroughCard("Digitize your work", "Quizzes can be digitalized through mobile application");
+    FancyWalkthroughCard page3 = new FancyWalkthroughCard("Keep in touch", "Keep connected with your students anywhere, and anytime");
+    FancyWalkthroughCard page4 = new FancyWalkthroughCard("Promote the process", "Generate reports on students' attitudes to promote the learning process");
 
-    List<FancyWalkthroughCard> cardList = new ArrayList<>();
+    List<FancyWalkthroughCard> pages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Add cards to the list
-        cardList.add(card1);
-        cardList.add(card2);
-        cardList.add(card3);
-        cardList.add(card4);
+        pages.add(page1);
+        pages.add(page2);
+        pages.add(page3);
+        pages.add(page4);
 
-        setImageBackground(R.drawable.digital_teacher);
+        setOnboardPages(pages);
+
+        setImageBackground(R.drawable.teacher);
     }
 
     @Override
