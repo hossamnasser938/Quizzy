@@ -8,6 +8,9 @@ public class Teacher extends User{
     private String telephoneNumber;
     private String subject;
 
+    public Teacher(){
+        //No-arg constructor
+    }
 
     public Teacher(@NonNull String id) {
         super(id);

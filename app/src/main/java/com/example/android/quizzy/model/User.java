@@ -10,6 +10,9 @@ public class User {
     private String lastName;
     private String city;
 
+    User(){
+        //No-arg constructor
+    }
 
     User(@NonNull String id) {
         this.id = id;
