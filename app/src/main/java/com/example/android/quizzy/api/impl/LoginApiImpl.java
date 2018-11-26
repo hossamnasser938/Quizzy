@@ -87,4 +87,54 @@ public class LoginApiImpl implements LoginApi {
         });
 
     }
+
+    /**
+     * given a user's id, it return from database either Teacher object or Student object
+     * @param id the id of the teacher or student
+     * @return
+     */
+    @Override
+    public Single<User> getUser(final String id){
+
+        final DatabaseReference teachersReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY);
+
+        return Single.create(new SingleOnSubscribe<User>() {
+            @Override
+            public void subscribe(final SingleEmitter<User> emitter) {
+                teachersReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            Teacher teacher = snapshot.getValue(Teacher.class);
+                            if(teacher.getId().contentEquals(id)) {
+                                emitter.onSuccess(teacher);
+                            }
+                            else {
+                                DatabaseReference studentsReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY).child(teacher.getTelephoneNumber()).child(Constants.STUDENTS_KEY);
+                                studentsReference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.hasChild(id)) {
+                                            Student student = dataSnapshot.child(id).getValue(Student.class);
+                                            emitter.onSuccess(student);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        emitter.onError(new Throwable(databaseError.getMessage()));
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(new Throwable(databaseError.getMessage()));
+                    }
+                });
+            }
+        });
+    }
 }

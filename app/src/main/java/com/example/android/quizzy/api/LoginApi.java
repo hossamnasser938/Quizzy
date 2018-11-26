@@ -13,5 +13,6 @@ public interface LoginApi {
     Completable registerInFirebaseDatabase(User user);
     Maybe<AuthResult> login(String email, String password);
     Single<Boolean> teacherExists(String teacherTelephoneNumber);
+    Single<User> getUser(String id);
 
 }

@@ -11,6 +11,8 @@ import android.widget.Toast
 import com.example.android.quizzy.QuizzyApplication
 import com.example.android.quizzy.R
 import com.example.android.quizzy.activity.MainActivity
+import com.example.android.quizzy.model.Student
+import com.example.android.quizzy.model.Teacher
 import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
@@ -92,14 +94,27 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun callLoginApi(body : HashMap<String, String>){
+    private fun callLoginApi(body : HashMap<String, String>) {
         disposable = loginViewModel.login(body).subscribe({
             Log.d(TAG, "logged in")
             //hide loading progress bar
             login_loading_progress_bar.visibility = View.GONE
 
-            //Open Main Activity with user info
+            //Open Main Activity and attach teacher's number
             val intent = Intent(context, MainActivity::class.java)
+
+            if(it is Teacher){
+                Log.d(TAG, "Got teacher with number : " + it.telephoneNumber)
+                intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, it.telephoneNumber)
+            }
+            else if(it is Student){
+                Log.d(TAG, "Got student with teacher's number : " + it.teacherTelephoneNumber)
+                intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, it.teacherTelephoneNumber)
+            }
+            else{
+                throw(Exception())
+            }
+
             startActivity(intent)
             activity?.finish()
             Toast.makeText(activity, R.string.signed_in, Toast.LENGTH_SHORT).show()
