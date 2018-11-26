@@ -44,10 +44,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             if(isTeacher != null){
-                Toast.makeText(this, "Got number = " + gotNumber + " and isTeacher : " + isTeacher, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Got number = " + gotNumber + " and isTeacher : " + isTeacher, Toast.LENGTH_LONG).show()
             }
             else {
-                Toast.makeText(this, "Error getting number", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error getting number", Toast.LENGTH_LONG).show()
             }
         }
     }
