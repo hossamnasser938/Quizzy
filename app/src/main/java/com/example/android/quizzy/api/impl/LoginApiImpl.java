@@ -1,5 +1,7 @@
 package com.example.android.quizzy.api.impl;
 
+import android.util.Log;
+
 import com.example.android.quizzy.api.LoginApi;
 import com.example.android.quizzy.model.Student;
 import com.example.android.quizzy.model.Teacher;
@@ -24,6 +26,8 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 
 public class LoginApiImpl implements LoginApi {
+
+    final String TAG = "LoginApiImpl";
 
     @Override
     public Maybe<AuthResult> registerInFirebaseAuth(String email, String password) {
@@ -107,6 +111,7 @@ public class LoginApiImpl implements LoginApi {
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             Teacher teacher = snapshot.getValue(Teacher.class);
                             if(teacher.getId().contentEquals(id)) {
+                                Log.d(TAG, "Found user as teacher");
                                 emitter.onSuccess(teacher);
                             }
                             else {
@@ -116,6 +121,7 @@ public class LoginApiImpl implements LoginApi {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.hasChild(id)) {
                                             Student student = dataSnapshot.child(id).getValue(Student.class);
+                                            Log.d(TAG, "Found user as student");
                                             emitter.onSuccess(student);
                                         }
                                     }

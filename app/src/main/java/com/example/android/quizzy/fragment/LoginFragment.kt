@@ -112,6 +112,7 @@ class LoginFragment : Fragment() {
                 intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, it.teacherTelephoneNumber)
             }
             else{
+                Log.d(TAG, "Neither a teacher nor a student")
                 throw(Exception())
             }
 
