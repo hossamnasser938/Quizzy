@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
             if (intent.extras.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)) {
                 isTeacher = false
-                gotNumber = intent.extras[Constants.TELEPHONE_NUMBER_KEY] as String
+                gotNumber = intent.extras[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String
             }
 
             if(isTeacher != null){
