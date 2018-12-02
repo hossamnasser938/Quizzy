@@ -85,7 +85,7 @@ class RegisterStudentFragment : Fragment() {
                 //Open Main Activity and attach student's teacher's phone with the intent
                 val intent = Intent(activity, MainActivity::class.java)
                 intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, userInputs[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String)
-                intent.putExtra(Constants.STUDENT_NAME_KEY, userInputs[Constants.FIRST_NAME_KEY] as String + " " + Constants.LAST_NAME_KEY)
+                intent.putExtra(Constants.STUDENT_NAME_KEY, userInputs[Constants.FIRST_NAME_KEY] as String + " " + userInputs[Constants.LAST_NAME_KEY] as String)
                 startActivity(intent)
             }, {
                 Log.d(TAG, "error registering : " + it.message)
