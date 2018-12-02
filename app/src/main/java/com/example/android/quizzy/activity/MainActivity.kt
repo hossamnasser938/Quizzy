@@ -31,20 +31,24 @@ class MainActivity : AppCompatActivity() {
         else {
             //Check getting number from login/register
             var isTeacher: Boolean? = null
-            var gotNumber: String? = null
+            var gotTeacherNumber: String? = null
+            var gotStudentName: String? = null
 
-            if (intent.extras.containsKey(Constants.TELEPHONE_NUMBER_KEY)) {
+            if (intent.extras.containsKey(Constants.TELEPHONE_NUMBER_KEY)) { //Teacher logged
                 isTeacher = true
-                gotNumber = intent.extras[Constants.TELEPHONE_NUMBER_KEY] as String
+                gotTeacherNumber = intent.extras[Constants.TELEPHONE_NUMBER_KEY] as String
             }
 
-            if (intent.extras.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)) {
+            if (intent.extras.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)) { //Student logged
                 isTeacher = false
-                gotNumber = intent.extras[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String
+                gotTeacherNumber = intent.extras[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String
+                gotStudentName = intent.extras[Constants.STUDENT_NAME_KEY] as String
             }
 
             if(isTeacher != null){
-                Toast.makeText(this, "Got number = " + gotNumber + " and isTeacher : " + isTeacher, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Got teacher number = " + gotTeacherNumber + " and isTeacher : " + isTeacher, Toast.LENGTH_LONG).show()
+                if(!isTeacher)
+                    Toast.makeText(this, "Got student name = " + gotStudentName, Toast.LENGTH_LONG).show()
             }
             else {
                 Toast.makeText(this, "Error getting number", Toast.LENGTH_LONG).show()

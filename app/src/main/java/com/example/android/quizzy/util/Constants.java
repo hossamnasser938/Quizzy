@@ -24,5 +24,6 @@ public class Constants {
     public static final String SUBJECT_KEY = "subject";
     public static final String ACADEMIC_YEAR_KEY = "academic_year";
     public static final String TEACHER_TELEPHONE_NUMBER_KEY = "teacher_telephone_number";
+    public static final String STUDENT_NAME_KEY = "student_name";
 
 }
