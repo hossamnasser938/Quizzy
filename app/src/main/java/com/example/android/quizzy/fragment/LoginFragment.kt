@@ -16,9 +16,16 @@ import com.example.android.quizzy.model.Teacher
 import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
+import com.example.android.quizzy.util.Constants.RC_SIGN_IN
+import com.google.android.gms.common.api.ApiException
+
 
 class LoginFragment : Fragment() {
 
@@ -43,6 +50,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setLoginButtonOnClickListener()
         setClickRegisterOnClickListener()
+        setGoogleLoginButtonOnClickListener()
     }
 
     private fun setLoginButtonOnClickListener(){
@@ -158,6 +166,49 @@ class LoginFragment : Fragment() {
 
     interface LoginTransitionInterface{
         fun openFragment(fragment : Fragment)
+    }
+
+    private fun setGoogleLoginButtonOnClickListener() {
+        login_google_button.setOnClickListener {
+            // Configure Google Sign In
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+
+            // Build a GoogleSignInClient with the options specified by gso.
+            val mGoogleSignInClient = GoogleSignIn.getClient(context!!, gso)
+
+            val signInIntent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, Constants.RC_SIGN_IN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
+        try {
+            val account = task.getResult(ApiException::class.java)
+            // Signed in successfully, show authenticated UI.
+            Toast.makeText(context, "Successfully signed in using google with email + " + account.email, Toast.LENGTH_LONG).show()
+        } catch (e: ApiException) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            Toast.makeText(context, "Failed to sign in using google with code + " + e.statusCode, Toast.LENGTH_LONG).show()
+        }
+
+
     }
 
 }

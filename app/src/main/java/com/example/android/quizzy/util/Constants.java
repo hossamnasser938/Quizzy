@@ -10,6 +10,8 @@ public class Constants {
     public static final int ZERO_ASCICODE = 48;
     public static final int NINE_ASCICODE = 57;
 
+    public static final int RC_SIGN_IN = 1;
+
     public static final String USERS_KEY = "users";
     public static final String TEACHERS_KEY = "teachers";
     public static final String STUDENTS_KEY = "students";

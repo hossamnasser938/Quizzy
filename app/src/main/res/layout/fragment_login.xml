@@ -86,6 +86,7 @@
         android:layout_gravity="center_horizontal">
 
         <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/login_facebook_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default8_margin"
@@ -94,6 +95,7 @@
             android:contentDescription="@string/facebook_login" />
 
         <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/login_google_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default8_margin"
