@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/default16_margin"
-            android:src="@drawable/logo_place_holder"/>
+            android:src="@drawable/logo"/>
 
         <FrameLayout
             android:id="@+id/login_frame_layout"
