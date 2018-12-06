@@ -72,7 +72,7 @@
         android:layout_margin="@dimen/default16_margin"
         android:visibility="gone"
         android:gravity="center_horizontal"
-        android:textColor="@color/red" />
+        android:background="@color/red" />
 
     <ProgressBar
         android:id="@+id/register_student_loading_progress_bar"

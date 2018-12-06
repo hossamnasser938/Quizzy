@@ -7,6 +7,8 @@
     <string name="register">Register</string>
     <string name="register_as_student">Register As Student</string>
     <string name="register_as_teacher">Register As Teacher</string>
+    <string name="facebook_login">Login using Facebook</string>
+    <string name="google_login">Login Using Google+</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="first_name">First Name</string>
@@ -42,4 +44,6 @@
     <string name="page3_description">Keep connected with your students anywhere, and anytime</string>
     <string name="page4_title">Promote the process</string>
     <string name="page4_description">Generate reports on students\' attitudes to promote the learning process</string>
+    <string name="or_register_using">or register using</string>
+    <string name="or_login_using">or login using</string>
 </resources>
