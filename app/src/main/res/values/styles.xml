@@ -41,4 +41,8 @@
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
+    <style name="Login_theme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/login</item>
+    </style>
+
 </resources>

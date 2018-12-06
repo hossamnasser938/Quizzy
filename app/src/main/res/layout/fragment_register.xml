@@ -5,16 +5,24 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/register_email_edit_text"
-        style="@style/RegisterFields"
-        android:hint="@string/email" />
+    <android.support.design.widget.TextInputLayout
+        style="@style/RegisterFields">
+        <EditText
+            android:id="@+id/register_email_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email" />
+    </android.support.design.widget.TextInputLayout>
 
-    <EditText
-        android:id="@+id/register_password_edit_text"
-        style="@style/RegisterFields"
-        android:inputType="textPassword"
-        android:hint="@string/password" />
+    <android.support.design.widget.TextInputLayout
+        style="@style/RegisterFields">
+        <EditText
+            android:id="@+id/register_password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/password" />
+    </android.support.design.widget.TextInputLayout>
 
     <RadioGroup
         style="@style/RegisterFields"
@@ -41,7 +49,7 @@
         android:id="@+id/register_error_text_view"
         style="@style/RegisterFields"
         android:visibility="gone"
-        android:textColor="@color/red" />
+        android:background="@color/red" />
 
     <ProgressBar
         android:id="@+id/register_loading_progress_bar"
@@ -50,7 +58,7 @@
         android:visibility="gone"
         android:layout_gravity="center_horizontal" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/next_button"
         style="@style/RegisterFields"
         android:layout_marginTop="@dimen/default16_margin"

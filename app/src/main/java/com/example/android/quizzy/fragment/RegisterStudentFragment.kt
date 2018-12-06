@@ -57,11 +57,6 @@ class RegisterStudentFragment : Fragment() {
         setRegisterButtonClickListener(userInputs)
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.title = getString(R.string.register_as_student)
-    }
-
     private fun setRegisterButtonClickListener(userInputs : HashMap<String, Any>){
         register_student_button.setOnClickListener{
             Log.d(TAG, "register button clicked")

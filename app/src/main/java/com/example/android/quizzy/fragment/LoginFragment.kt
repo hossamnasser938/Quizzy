@@ -45,11 +45,6 @@ class LoginFragment : Fragment() {
         setClickRegisterOnClickListener()
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.title = getString(R.string.login)
-    }
-
     private fun setLoginButtonOnClickListener(){
         login_button.setOnClickListener {
             Log.d(TAG, "login button clicked")

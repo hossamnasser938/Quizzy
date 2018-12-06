@@ -26,7 +26,8 @@
         </activity>
         <activity android:name=".activity.WalkThroughActivty" />
         <activity android:name=".activity.IntroActivity" />
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.LoginActivity"
+            android:theme="@style/Login_theme"/>
         <activity android:name=".activity.TeacherActivity"
             android:label="@string/teacher" />
         <activity android:name=".activity.StudentActivity"

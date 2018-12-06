@@ -34,11 +34,6 @@ class RegisterFragment : Fragment() {
         setClickLoginOnClickListener()
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.title = getString(R.string.register)
-    }
-
     private fun setNextButtonOnClickListener(){
         next_button.setOnClickListener {
             Log.d(TAG, "next button clicked")

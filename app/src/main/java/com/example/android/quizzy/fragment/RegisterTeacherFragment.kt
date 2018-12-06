@@ -57,11 +57,6 @@ class RegisterTeacherFragment : Fragment() {
         setRegisterButtonClickListener(userInputs)
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity?.title = getString(R.string.register_as_teacher)
-    }
-
     private fun setRegisterButtonClickListener(userInputs : HashMap<String, Any>){
         register_teacher_button.setOnClickListener {
             if(!extractUserInputs(userInputs))
