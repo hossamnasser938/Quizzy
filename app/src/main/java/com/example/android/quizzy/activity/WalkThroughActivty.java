@@ -2,6 +2,7 @@ package com.example.android.quizzy.activity;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.android.quizzy.R;
@@ -51,5 +52,14 @@ public class  WalkThroughActivty extends FancyWalkthroughActivity {
         //Navigate to Login Activity
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Finish app
+        //TODO: remove this check whem specifying 19 as min SDK
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            finishAffinity();
+        }
     }
 }

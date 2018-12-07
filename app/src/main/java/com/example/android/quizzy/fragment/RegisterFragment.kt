@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.android.quizzy.QuizzyApplication
 import com.example.android.quizzy.R
 import com.example.android.quizzy.activity.MainActivity
 import com.example.android.quizzy.model.Student
@@ -42,6 +43,7 @@ class RegisterFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         transient = activity as LoginFragment.LoginTransitionInterface
+        (activity?.application as QuizzyApplication).component.inject(this)
         auth = FirebaseAuth.getInstance()
     }
 
