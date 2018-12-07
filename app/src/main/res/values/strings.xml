@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Quizzy</string>
-    <!-- <string name="default_web_client_id">AIzaSyBKP7nXBKa0oY6WEOzOTn94S_dR35LknzM</string> -->
+    <string name="web_client_id">74520430768-h3ccm53d0iceqa4p9126k2550pmh89is.apps.googleusercontent.com</string>
     <string name="teacher">Teacher</string>
     <string name="student">Student</string>
     <string name="login">Login</string>
@@ -10,6 +10,8 @@
     <string name="register_as_teacher">Register As Teacher</string>
     <string name="facebook_login">Login using Facebook</string>
     <string name="google_login">Login Using Google</string>
+    <string name="facebook_register">Register Using Facebook</string>
+    <string name="google_register">Register Using Google</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="first_name">First Name</string>
@@ -33,8 +35,10 @@
     <string name="logged_successfully">Logged Successfully</string>
     <string name="you_are_logged">You are logged successfully</string>
     <string name="error_login">Error occurs while Performing login, please try again later</string>
+    <string name="no_account">No account with this e-mail, please create one</string>
     <string name="error_register">Error occurs while Performing register, please try again later</string>
     <string name="signed_in">Signed in successfully</string>
+    <string name="already_member">Your already a member, welcome back</string>
     <string name="teacher_with_same_number">There is a teacher with the same telephone number</string>
     <string name="no_teacher_with_number">There is no teacher with this telephone number</string>
     <string name="page1_title">No paper</string>
@@ -47,4 +51,6 @@
     <string name="page4_description">Generate reports on students\' attitudes to promote the learning process</string>
     <string name="or_register_using">or register using</string>
     <string name="or_login_using">or login using</string>
+    <string name="you_are">You are?</string>
+    <string name="authenticating">Authenticating</string>
 </resources>

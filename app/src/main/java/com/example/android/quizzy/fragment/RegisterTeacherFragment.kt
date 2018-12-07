@@ -71,23 +71,46 @@ class RegisterTeacherFragment : Fragment() {
             //show loading progress bar
             register_teacher_loading_progress_bar.visibility = View.VISIBLE
 
-            disposable = loginViewModel.register(userInputs).subscribe({
-                Log.d(TAG, "registered successfully")
-                //hide loading progress bar
-                register_teacher_loading_progress_bar.visibility = View.GONE
+            if(userInputs.containsKey(Constants.ID_KEY)) {
+                //Register using Google
+                Log.d(TAG, "got id from login fragment")
 
-                //Open Main Acivity and attach teacher's telephone number
-                val intent = Intent(activity, MainActivity::class.java)
-                intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, userInputs[Constants.TELEPHONE_NUMBER_KEY] as String)
-                startActivity(intent)
-            }, {
-                Log.d(TAG, "error registering : " + it.message)
-                //hide loading progress bar
-                register_teacher_loading_progress_bar.visibility = View.GONE
+                disposable = loginViewModel.registerInDBOnly(userInputs).subscribe({
+                    successfulRegister(userInputs)
+                }, {
+                    failureRegister(it)
+                })
+            }
+            else {
+                //Register normally
+                Log.d(TAG, "got e-mail and password from register fragment")
 
-                showErrorMessage(it.message)
-            })
+                disposable = loginViewModel.register(userInputs).subscribe({
+                    successfulRegister(userInputs)
+                }, {
+                    failureRegister(it)
+                })
+            }
         }
+    }
+
+    private fun failureRegister(it: Throwable) {
+        Log.d(TAG, "error registering : " + it.message)
+        //hide loading progress bar
+        register_teacher_loading_progress_bar.visibility = View.GONE
+
+        showErrorMessage(it.message)
+    }
+
+    private fun successfulRegister(userInputs: HashMap<String, Any>) {
+        Log.d(TAG, "registered successfully")
+        //hide loading progress bar
+        register_teacher_loading_progress_bar.visibility = View.GONE
+
+        //Open Main Acivity and attach teacher's telephone number
+        val intent = Intent(activity, MainActivity::class.java)
+        intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, userInputs[Constants.TELEPHONE_NUMBER_KEY] as String)
+        startActivity(intent)
     }
 
     private fun extractUserInputs(userInputs: HashMap<String, Any>) : Boolean{

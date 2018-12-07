@@ -13,6 +13,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.HashMap
@@ -32,19 +33,7 @@ class LoginViewModelImpl : LoginViewModel {
     override fun register(body: HashMap<String, Any>): Completable {
         Log.d(TAG, "register executes")
         //check if the user is a teacher or a student
-        val teacherUser : Boolean
-        if(body.containsKey(Constants.TELEPHONE_NUMBER_KEY)){
-            Log.d(TAG, "register as teacher")
-            teacherUser = true
-        }
-        else if(body.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)){
-            Log.d(TAG, "register as student")
-            teacherUser = false
-        }
-        else{
-            Log.d(TAG, "not a teacher neither a student")
-            throw Exception()
-        }
+        val teacherUser = teacherOrStudent(body)
 
         if(teacherUser){
             //teacher
@@ -89,6 +78,61 @@ class LoginViewModelImpl : LoginViewModel {
             }
         }
 
+    }
+
+    private fun teacherOrStudent(body: HashMap<String, Any>) : Boolean {
+        if (body.containsKey(Constants.TELEPHONE_NUMBER_KEY)) {
+            Log.d(TAG, "register as teacher")
+            return true
+        }
+        else if (body.containsKey(Constants.TEACHER_TELEPHONE_NUMBER_KEY)) {
+            Log.d(TAG, "register as student")
+            return false
+        }
+        else {
+            Log.d(TAG, "not a teacher neither a student")
+            throw Exception()
+        }
+    }
+
+    override fun registerInDBOnly(body: HashMap<String, Any>): Completable {
+        Log.d(TAG, "register only in DB executes")
+
+        //check if the user is a teacher or a student
+        val teacherUser = teacherOrStudent(body)
+
+        if(teacherUser){
+            //teacher
+            return api.teacherExists(body[Constants.TELEPHONE_NUMBER_KEY] as String).flatMapCompletable {
+                if(it){
+                    Log.d(TAG, "teacher already exists")
+                    Completable.error(Throwable(context.getString(R.string.teacher_with_same_number)))
+                }
+                else{
+                    val user : User = Teacher(body[Constants.ID_KEY] as String)
+
+                    addUserInfo(user, body)
+
+                    api.registerInFirebaseDatabase(user)
+                }
+            }
+        }
+        else{
+            //student
+            return api.teacherExists(body[Constants.TEACHER_TELEPHONE_NUMBER_KEY] as String).flatMapCompletable {
+                if(it){
+                    val user : User = Student(body[Constants.ID_KEY] as String)
+
+                    addUserInfo(user, body)
+
+                    api.registerInFirebaseDatabase(user)
+                }
+                else {
+                    Log.d(TAG, "teacher does not exist")
+                    Completable.error(Throwable(context.getString(R.string.no_teacher_with_number)))
+                }
+            }
+        }
     }
 
     override fun login(body: HashMap<String, String>): Maybe<User> {
@@ -159,4 +203,7 @@ class LoginViewModelImpl : LoginViewModel {
 
     }
 
+    override fun getUser(id: String?): Single<User> {
+        return api.getUser(id)
+    }
 }

@@ -133,6 +133,10 @@ public class LoginApiImpl implements LoginApi {
                                 });
                             }
                         }
+
+                        if (!emitter.isDisposed()) {
+                            emitter.onError(new Throwable(Constants.NO_ACCOUNT));
+                        }
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.example.android.quizzy.fragment
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import com.example.android.quizzy.R
 import com.example.android.quizzy.activity.MainActivity
 import com.example.android.quizzy.model.Student
 import com.example.android.quizzy.model.Teacher
+import com.example.android.quizzy.model.User
 import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
@@ -25,6 +27,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.example.android.quizzy.util.Constants.RC_SIGN_IN
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 
 class LoginFragment : Fragment() {
@@ -33,13 +37,17 @@ class LoginFragment : Fragment() {
 
     @Inject
     lateinit var loginViewModel : LoginViewModel
+
+    private lateinit var auth : FirebaseAuth
+
     private lateinit var disposable : Disposable
-    private lateinit var transient: LoginTransitionInterface
+    lateinit var transient: LoginTransitionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity?.application as QuizzyApplication).component.inject(this)
         transient = activity as LoginTransitionInterface
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,7 +77,7 @@ class LoginFragment : Fragment() {
             }
 
             //get email and password entered by user
-            val userInput : HashMap<String, String> = getUserInput()
+            val userInput = getUserInput()
 
             //check empty email or password
             if(!Utils.checkEmptyInputs(userInput[Constants.EMAIL_KEY], userInput[Constants.PASSWORD_KEY])){
@@ -103,26 +111,7 @@ class LoginFragment : Fragment() {
             //hide loading progress bar
             login_loading_progress_bar.visibility = View.GONE
 
-            //Open Main Activity and attach teacher's number
-            val intent = Intent(context, MainActivity::class.java)
-
-            if(it is Teacher){
-                Log.d(TAG, "Got teacher with number : " + it.telephoneNumber)
-                intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, it.telephoneNumber)
-            }
-            else if(it is Student){
-                Log.d(TAG, "Got student with teacher's number : " + it.teacherTelephoneNumber)
-                intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, it.teacherTelephoneNumber)
-                intent.putExtra(Constants.STUDENT_NAME_KEY, it.firstName + " " + it.lastName)
-            }
-            else{
-                Log.d(TAG, "Neither a teacher nor a student")
-                throw(Exception())
-            }
-
-            startActivity(intent)
-            activity?.finish()
-            Toast.makeText(activity, R.string.signed_in, Toast.LENGTH_SHORT).show()
+            navigateUser(it)
         }, {
             Log.d(TAG, "Error logging : " + it.message)
             //hide loading progress bar
@@ -131,6 +120,27 @@ class LoginFragment : Fragment() {
             //show error message
             showErrorMessage(it.message)
         })
+    }
+
+    private fun navigateUser(it: User?) {
+        //Open Main Activity and attach teacher's number
+        val intent = Intent(context, MainActivity::class.java)
+
+        if (it is Teacher) {
+            Log.d(TAG, "Got teacher with number : " + it.telephoneNumber)
+            intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, it.telephoneNumber)
+        } else if (it is Student) {
+            Log.d(TAG, "Got student with teacher's number : " + it.teacherTelephoneNumber)
+            intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, it.teacherTelephoneNumber)
+            intent.putExtra(Constants.STUDENT_NAME_KEY, it.firstName + " " + it.lastName)
+        } else {
+            Log.d(TAG, "Neither a teacher nor a student")
+            throw(Exception())
+        }
+
+        startActivity(intent)
+        activity?.finish()
+        Toast.makeText(activity, R.string.signed_in, Toast.LENGTH_SHORT).show()
     }
 
     fun setClickRegisterOnClickListener(){
@@ -170,29 +180,36 @@ class LoginFragment : Fragment() {
 
     private fun setGoogleLoginButtonOnClickListener() {
         login_google_button.setOnClickListener {
-            // Configure Google Sign In
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build()
-
-            // Build a GoogleSignInClient with the options specified by gso.
-            val mGoogleSignInClient = GoogleSignIn.getClient(context!!, gso)
-
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, Constants.RC_SIGN_IN)
+            authUsingGoogle()
         }
+    }
+
+    private fun authUsingGoogle() {
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_client_id))
+                .requestEmail()
+                .build()
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        val mGoogleSignInClient = GoogleSignIn.getClient(context!!, gso)
+
+        val signInIntent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "Got intent in onActivityResult")
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            Log.d(TAG, "Intent regards google login ")
             // The Task returned from this call is always completed, no need to attach
             // a listener.
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
+            val result = GoogleSignIn.getSignedInAccountFromIntent(data)
+
+            handleSignInResult(result)
         }
     }
 
@@ -200,15 +217,61 @@ class LoginFragment : Fragment() {
         try {
             val account = task.getResult(ApiException::class.java)
             // Signed in successfully, show authenticated UI.
-            Toast.makeText(context, "Successfully signed in using google with email + " + account.email, Toast.LENGTH_LONG).show()
+            signInWithCredential(account)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
-            Toast.makeText(context, "Failed to sign in using google with code + " + e.statusCode, Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+            showErrorMessage(R.string.error_login)
         }
+    }
 
+    private fun signInWithCredential(account: GoogleSignInAccount) {
+        Log.d(TAG, "Sign in with credential")
+        //show loading progress bar
+        login_loading_progress_bar.visibility = View.VISIBLE
 
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        // Sign in success
+                        Log.d(TAG, "signInWithCredential:success")
+
+                        val currentUser = auth.currentUser
+
+                        loginViewModel.getUser(currentUser?.uid).subscribe({
+                            Log.d(TAG, "got user")
+
+                            //hide loading progress bar
+                            login_loading_progress_bar.visibility = View.GONE
+
+                            navigateUser(it)
+                        }, {
+                            Log.d(TAG, "got no user")
+
+                            //hide loading progress bar
+                            login_loading_progress_bar.visibility = View.GONE
+
+                            //show dialog to ask user whether he is a teacher or a student
+                            val input : HashMap<String, Any> = HashMap()
+                            input[Constants.ID_KEY] = currentUser?.uid as String
+
+                            val dialog = Student_TeacherDialog(context!!, this, input)
+                            dialog.show()
+                        })
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        //hide loading progress bar
+                        login_loading_progress_bar.visibility = View.GONE
+
+                        showErrorMessage(R.string.error_login)
+                        Log.w(TAG, "signInWithCredential:failure", it.exception)
+                    }
+                }
     }
 
 }

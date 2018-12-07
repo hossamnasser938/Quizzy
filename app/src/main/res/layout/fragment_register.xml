@@ -53,8 +53,9 @@
 
     <ProgressBar
         android:id="@+id/register_loading_progress_bar"
-        android:layout_width="@dimen/progress_bar_dimens"
-        android:layout_height="@dimen/progress_bar_dimens"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/progress_icon"
         android:visibility="gone"
         android:layout_gravity="center_horizontal" />
 
@@ -107,20 +108,22 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/register_facebook_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default8_margin"
             android:src="@drawable/icon_facebook"
             android:background="@color/colorTransparent"
-            android:contentDescription="@string/facebook_login" />
+            android:contentDescription="@string/facebook_register" />
 
         <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/register_google_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default8_margin"
             android:src="@drawable/icon_google"
             android:background="@color/colorTransparent"
-            android:contentDescription="@string/google_login" />
+            android:contentDescription="@string/google_register" />
 
     </LinearLayout>
 

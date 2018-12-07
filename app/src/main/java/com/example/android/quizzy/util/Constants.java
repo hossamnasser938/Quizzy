@@ -17,6 +17,7 @@ public class Constants {
     public static final String STUDENTS_KEY = "students";
 
     public static final String INPUTS_KEY = "inputs";
+    public static final String ID_KEY = "id";
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
     public static final String FIRST_NAME_KEY = "first_name";
@@ -27,5 +28,8 @@ public class Constants {
     public static final String ACADEMIC_YEAR_KEY = "academic_year";
     public static final String TEACHER_TELEPHONE_NUMBER_KEY = "teacher_telephone_number";
     public static final String STUDENT_NAME_KEY = "student_name";
+
+
+    public static final String NO_ACCOUNT = "No account found";
 
 }
