@@ -87,6 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/register"
-        android:layout_margin="@dimen/default8_margin" />
+        android:layout_margin="@dimen/default8_margin"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white" />
 
 </LinearLayout>

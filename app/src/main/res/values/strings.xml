@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Quizzy</string>
     <string name="web_client_id">74520430768-h3ccm53d0iceqa4p9126k2550pmh89is.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">321136085151309</string>
+    <string name="fb_login_protocol_scheme">fb321136085151309</string>
     <string name="teacher">Teacher</string>
     <string name="student">Student</string>
     <string name="login">Login</string>
@@ -53,4 +55,6 @@
     <string name="or_login_using">or login using</string>
     <string name="you_are">You are?</string>
     <string name="authenticating">Authenticating</string>
+    <string name="email_permission">email</string>
+    <string name="profile_permission">public_profile</string>
 </resources>

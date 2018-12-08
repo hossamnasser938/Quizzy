@@ -26,8 +26,15 @@ import javax.inject.Inject
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.example.android.quizzy.util.Constants.RC_SIGN_IN
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 
@@ -37,6 +44,8 @@ class LoginFragment : Fragment() {
 
     @Inject
     lateinit var loginViewModel : LoginViewModel
+
+    private lateinit var callbackManager : CallbackManager
 
     private lateinit var auth : FirebaseAuth
 
@@ -59,6 +68,7 @@ class LoginFragment : Fragment() {
         setLoginButtonOnClickListener()
         setClickRegisterOnClickListener()
         setGoogleLoginButtonOnClickListener()
+        setFacebookLoginButtonOnClickListener()
     }
 
     private fun setLoginButtonOnClickListener(){
@@ -209,25 +219,31 @@ class LoginFragment : Fragment() {
             // a listener.
             val result = GoogleSignIn.getSignedInAccountFromIntent(data)
 
-            handleSignInResult(result)
+            handleGoogleSignInResult(result)
+        }
+        else {     //result returning from facebook sign
+            // Pass the activity result back to the Facebook SDK
+            Log.d(TAG, "intent regards facebook login")
+            callbackManager.onActivityResult(requestCode, resultCode, data)
+
         }
     }
 
-    private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
+    private fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>) {
         try {
             val account = task.getResult(ApiException::class.java)
             // Signed in successfully, show authenticated UI.
-            signInWithCredential(account)
+            signInWithGoogleCredential(account)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
             e.printStackTrace()
-            showErrorMessage(R.string.error_login)
+            showErrorMessage(e.message)
         }
     }
 
-    private fun signInWithCredential(account: GoogleSignInAccount) {
+    private fun signInWithGoogleCredential(account: GoogleSignInAccount) {
         Log.d(TAG, "Sign in with credential")
         //show loading progress bar
         login_loading_progress_bar.visibility = View.VISIBLE
@@ -242,26 +258,7 @@ class LoginFragment : Fragment() {
 
                         val currentUser = auth.currentUser
 
-                        loginViewModel.getUser(currentUser?.uid).subscribe({
-                            Log.d(TAG, "got user")
-
-                            //hide loading progress bar
-                            login_loading_progress_bar.visibility = View.GONE
-
-                            navigateUser(it)
-                        }, {
-                            Log.d(TAG, "got no user")
-
-                            //hide loading progress bar
-                            login_loading_progress_bar.visibility = View.GONE
-
-                            //show dialog to ask user whether he is a teacher or a student
-                            val input : HashMap<String, Any> = HashMap()
-                            input[Constants.ID_KEY] = currentUser?.uid as String
-
-                            val dialog = Student_TeacherDialog(context!!, this, input)
-                            dialog.show()
-                        })
+                        checkUserExistence(currentUser)
 
                     } else {
                         // If sign in fails, display a message to the user.
@@ -272,6 +269,90 @@ class LoginFragment : Fragment() {
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
                     }
                 }
+    }
+
+    private fun checkUserExistence(currentUser: FirebaseUser?) {
+        loginViewModel.getUser(currentUser?.uid).subscribe({
+            Log.d(TAG, "got user")
+
+            //hide loading progress bar
+            login_loading_progress_bar.visibility = View.GONE
+
+            navigateUser(it)
+        }, {
+            Log.d(TAG, "got no user")
+
+            //hide loading progress bar
+            login_loading_progress_bar.visibility = View.GONE
+
+            //show dialog to ask user whether he is a teacher or a student
+            val input: HashMap<String, Any> = HashMap()
+            input[Constants.ID_KEY] = currentUser?.uid as String
+
+            val dialog = Student_TeacherDialog(context!!, this, input)
+            dialog.show()
+        })
+    }
+
+    private fun setFacebookLoginButtonOnClickListener() {
+        login_facebook_button.setOnClickListener {
+            authUsingFacebook()
+        }
+    }
+
+    private fun authUsingFacebook() {
+        Log.d(TAG, "auth using facebook executes")
+
+        // Initialize Facebook Login button
+        callbackManager = CallbackManager.Factory.create()
+
+        login_facebook_button.setReadPermissions(getString(R.string.email_permission), getString(R.string.profile_permission))
+        login_facebook_button.fragment = this
+        login_facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                Log.d(TAG, "facebook:onSuccess: " + loginResult)
+                handleFacebookAccessToken(loginResult.accessToken)
+            }
+
+            override fun onCancel() {
+                Log.d(TAG, "facebook:onCancel")
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.d(TAG, "facebook:onError", error)
+                Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken){
+        Log.d(TAG, "handleFacebookAccessToken:$token")
+        //show loading progress bar
+        login_loading_progress_bar.visibility = View.VISIBLE
+
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener({
+                    Log.d(TAG, "got runnable")
+                }, {
+                    if (it.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success")
+                        val user = auth.currentUser
+
+                        Toast.makeText(context, "Signed in facebook", Toast.LENGTH_LONG).show()
+                        //checkUserExistence(user)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", it.exception)
+
+                        //hide loading progress bar
+                        login_loading_progress_bar.visibility = View.GONE
+
+                        Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
+                    }
+                })
+
     }
 
 }
