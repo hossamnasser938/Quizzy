@@ -4,7 +4,6 @@
     package="com.example.android.quizzy">
 
     <uses-sdk tools:overrideLibrary="com.shashank.sony.fancywalkthroughlib" />
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 

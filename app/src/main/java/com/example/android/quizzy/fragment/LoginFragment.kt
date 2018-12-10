@@ -1,6 +1,5 @@
 package com.example.android.quizzy.fragment
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -25,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
-import com.example.android.quizzy.util.Constants.RC_SIGN_IN
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -36,6 +34,7 @@ import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import java.util.*
 
 
 class LoginFragment : Fragment() {
@@ -205,7 +204,7 @@ class LoginFragment : Fragment() {
         val mGoogleSignInClient = GoogleSignIn.getClient(context!!, gso)
 
         val signInIntent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        startActivityForResult(signInIntent, Constants.RC_SIGN_IN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -213,7 +212,7 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "Got intent in onActivityResult")
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constants.RC_SIGN_IN) {
             Log.d(TAG, "Intent regards google login ")
             // The Task returned from this call is always completed, no need to attach
             // a listener.
@@ -259,7 +258,6 @@ class LoginFragment : Fragment() {
                         val currentUser = auth.currentUser
 
                         checkUserExistence(currentUser)
-
                     } else {
                         // If sign in fails, display a message to the user.
                         //hide loading progress bar
@@ -280,7 +278,7 @@ class LoginFragment : Fragment() {
 
             navigateUser(it)
         }, {
-            Log.d(TAG, "got no user")
+            Log.d(TAG, "got no user with error: ${it.message}")
 
             //hide loading progress bar
             login_loading_progress_bar.visibility = View.GONE
@@ -306,8 +304,10 @@ class LoginFragment : Fragment() {
         // Initialize Facebook Login button
         callbackManager = CallbackManager.Factory.create()
 
-        login_facebook_button.setReadPermissions(getString(R.string.email_permission), getString(R.string.profile_permission))
         login_facebook_button.fragment = this
+
+        login_facebook_button.setReadPermissions(getString(R.string.email_permission), getString(R.string.profile_permission))
+
         login_facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 Log.d(TAG, "facebook:onSuccess: " + loginResult)
@@ -332,16 +332,14 @@ class LoginFragment : Fragment() {
 
         val credential = FacebookAuthProvider.getCredential(token.token)
         auth.signInWithCredential(credential)
-                .addOnCompleteListener({
-                    Log.d(TAG, "got runnable")
-                }, {
+                .addOnCompleteListener{
+                    Log.d(TAG, "got completed sign in with credential")
                     if (it.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
                         val user = auth.currentUser
 
-                        Toast.makeText(context, "Signed in facebook", Toast.LENGTH_LONG).show()
-                        //checkUserExistence(user)
+                        checkUserExistence(user)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
@@ -351,8 +349,7 @@ class LoginFragment : Fragment() {
 
                         Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
                     }
-                })
-
+                }
     }
 
 }

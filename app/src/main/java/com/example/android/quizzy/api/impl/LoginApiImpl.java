@@ -15,11 +15,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Iterator;
+
 import durdinapps.rxfirebase2.RxFirebaseAuth;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -108,6 +108,8 @@ public class LoginApiImpl implements LoginApi {
                 teachersReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        final Iterator<DataSnapshot> iterable = dataSnapshot.getChildren().iterator();
+
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             Teacher teacher = snapshot.getValue(Teacher.class);
                             if(teacher.getId().contentEquals(id)) {
@@ -124,6 +126,11 @@ public class LoginApiImpl implements LoginApi {
                                             Log.d(TAG, "Found user as student");
                                             emitter.onSuccess(student);
                                         }
+
+                                        //if it is the last teacher and no emit caused disposing occurred
+                                        if(!iterable.hasNext() && !emitter.isDisposed()){
+                                            emitter.onError(new Throwable(Constants.NO_ACCOUNT));
+                                        }
                                     }
 
                                     @Override
@@ -132,10 +139,6 @@ public class LoginApiImpl implements LoginApi {
                                     }
                                 });
                             }
-                        }
-
-                        if (!emitter.isDisposed()) {
-                            emitter.onError(new Throwable(Constants.NO_ACCOUNT));
                         }
                     }
 
