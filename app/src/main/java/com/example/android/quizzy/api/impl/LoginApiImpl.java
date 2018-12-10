@@ -112,32 +112,34 @@ public class LoginApiImpl implements LoginApi {
 
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             Teacher teacher = snapshot.getValue(Teacher.class);
-                            if(teacher.getId().contentEquals(id)) {
-                                Log.d(TAG, "Found user as teacher");
-                                emitter.onSuccess(teacher);
-                            }
-                            else {
-                                DatabaseReference studentsReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY).child(teacher.getTelephoneNumber()).child(Constants.STUDENTS_KEY);
-                                studentsReference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.hasChild(id)) {
-                                            Student student = dataSnapshot.child(id).getValue(Student.class);
-                                            Log.d(TAG, "Found user as student");
-                                            emitter.onSuccess(student);
+                            if(teacher != null){
+                                if(teacher.getId().contentEquals(id)) {
+                                    Log.d(TAG, "Found user as teacher");
+                                    emitter.onSuccess(teacher);
+                                }
+                                else {
+                                    DatabaseReference studentsReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY).child(teacher.getTelephoneNumber()).child(Constants.STUDENTS_KEY);
+                                    studentsReference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if(dataSnapshot.hasChild(id)) {
+                                                Student student = dataSnapshot.child(id).getValue(Student.class);
+                                                Log.d(TAG, "Found user as student");
+                                                emitter.onSuccess(student);
+                                            }
+
+                                            //if it is the last teacher and no emit caused disposing occurred
+                                            if(!iterable.hasNext() && !emitter.isDisposed()){
+                                                emitter.onError(new Throwable(Constants.NO_ACCOUNT));
+                                            }
                                         }
 
-                                        //if it is the last teacher and no emit caused disposing occurred
-                                        if(!iterable.hasNext() && !emitter.isDisposed()){
-                                            emitter.onError(new Throwable(Constants.NO_ACCOUNT));
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            emitter.onError(new Throwable(databaseError.getMessage()));
                                         }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        emitter.onError(new Throwable(databaseError.getMessage()));
-                                    }
-                                });
+                                    });
+                                }
                             }
                         }
                     }

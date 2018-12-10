@@ -17,12 +17,19 @@ import com.example.android.quizzy.model.User
 import com.example.android.quizzy.util.Constants
 import com.example.android.quizzy.util.Utils
 import com.example.android.quizzy.viewModel.LoginViewModel
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.fragment_register.*
 import javax.inject.Inject
@@ -33,6 +40,8 @@ class RegisterFragment : Fragment() {
 
     @Inject
     lateinit var loginViewModel : LoginViewModel
+
+    private lateinit var callbackManager : CallbackManager
 
     private lateinit var transient: LoginFragment.LoginTransitionInterface
 
@@ -56,6 +65,7 @@ class RegisterFragment : Fragment() {
         setNextButtonOnClickListener()
         setClickLoginOnClickListener()
         setGoogleRegisterButtonOnClickListener()
+        setFacebookRegisterButtonOnClickListener()
     }
 
     private fun setGoogleRegisterButtonOnClickListener() {
@@ -168,6 +178,11 @@ class RegisterFragment : Fragment() {
 
             handleRegisterResult(result)
         }
+        else {     //result returning from facebook sign
+            // Pass the activity result back to the Facebook SDK
+            Log.d(TAG, "intent regards facebook login")
+            callbackManager.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun handleRegisterResult(task: Task<GoogleSignInAccount>) {
@@ -199,24 +214,7 @@ class RegisterFragment : Fragment() {
 
                         val currentUser = auth.currentUser
 
-                        loginViewModel.getUser(currentUser?.uid).subscribe({
-                            Log.d(TAG, "got user")
-
-                            //hide loading progress bar
-                            register_loading_progress_bar.visibility = View.GONE
-
-                            navigateUser(it)
-                        } , {
-                            Log.d(TAG, "got no user")
-
-                            //hide loading progress bar
-                            register_loading_progress_bar.visibility = View.GONE
-
-                            val input : HashMap<String, Any> = HashMap()
-                            input[Constants.ID_KEY] = currentUser?.uid as String
-
-                            performNext(input)
-                        })
+                        checkUserExistence(currentUser)
                     } else {
                         // If sign in fails, display a message to the user.
                         //hide loading progress bar
@@ -226,6 +224,27 @@ class RegisterFragment : Fragment() {
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
                     }
                 }
+    }
+
+    private fun checkUserExistence(currentUser: FirebaseUser?) {
+        loginViewModel.getUser(currentUser?.uid).subscribe({
+            Log.d(TAG, "got user")
+
+            //hide loading progress bar
+            register_loading_progress_bar.visibility = View.GONE
+
+            navigateUser(it)
+        }, {
+            Log.d(TAG, "got no user")
+
+            //hide loading progress bar
+            register_loading_progress_bar.visibility = View.GONE
+
+            val input: HashMap<String, Any> = HashMap()
+            input[Constants.ID_KEY] = currentUser?.uid as String
+
+            performNext(input)
+        })
     }
 
     private fun navigateUser(it: User?) {
@@ -247,6 +266,66 @@ class RegisterFragment : Fragment() {
         startActivity(intent)
         activity?.finish()
         Toast.makeText(activity, R.string.already_member, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setFacebookRegisterButtonOnClickListener() {
+        register_facebook_button.setOnClickListener {
+            authUsingFacebook()
+        }
+    }
+
+    private fun authUsingFacebook() {
+        Log.d(TAG, "auth using facebook executes")
+
+        // Initialize Facebook Login button
+        callbackManager = CallbackManager.Factory.create()
+
+        register_facebook_button.fragment = this
+
+        register_facebook_button.setReadPermissions(getString(R.string.email_permission), getString(R.string.profile_permission))
+
+        register_facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                Log.d(TAG, "facebook:onSuccess: " + loginResult)
+                handleFacebookAccessToken(loginResult.accessToken)
+            }
+
+            override fun onCancel() {
+                Log.d(TAG, "facebook:onCancel")
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.d(TAG, "facebook:onError", error)
+                Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken){
+        Log.d(TAG, "handleFacebookAccessToken:$token")
+        //show loading progress bar
+        register_loading_progress_bar.visibility = View.VISIBLE
+
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener{
+                    Log.d(TAG, "got completed sign in with credential")
+                    if (it.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success")
+                        val user = auth.currentUser
+
+                        checkUserExistence(user)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", it.exception)
+
+                        //hide loading progress bar
+                        register_loading_progress_bar.visibility = View.GONE
+
+                        Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
+                    }
+                }
     }
 
 }
