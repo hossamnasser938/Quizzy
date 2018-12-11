@@ -130,6 +130,7 @@ public class LoginApiImpl implements LoginApi {
 
                                             //if it is the last teacher and no emit caused disposing occurred
                                             if(!iterable.hasNext() && !emitter.isDisposed()){
+                                                Log.d(TAG, "Did not find user and sent error");
                                                 emitter.onError(new Throwable(Constants.NO_ACCOUNT));
                                             }
                                         }

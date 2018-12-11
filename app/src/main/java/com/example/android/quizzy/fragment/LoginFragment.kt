@@ -77,7 +77,7 @@ class LoginFragment : Fragment() {
             it.isClickable = false
 
             //hide error text view
-            login_error_text_view.visibility = View.GONE
+            hideError()
 
             //check internet connection
             if(!Utils.isNetworkConnected(context)){
@@ -107,7 +107,7 @@ class LoginFragment : Fragment() {
             }
 
             //show loading progress bar
-            login_loading_progress_bar.visibility = View.VISIBLE
+            showLoading()
 
             //Call web service
             callLoginApi(userInput)
@@ -118,13 +118,13 @@ class LoginFragment : Fragment() {
         disposable = loginViewModel.login(body).subscribe({
             Log.d(TAG, "logged in")
             //hide loading progress bar
-            login_loading_progress_bar.visibility = View.GONE
+            hideLoading()
 
             navigateUser(it)
         }, {
             Log.d(TAG, "Error logging : " + it.message)
             //hide loading progress bar
-            login_loading_progress_bar.visibility = View.GONE
+            hideLoading()
 
             //show error message
             showErrorMessage(it.message)
@@ -166,21 +166,6 @@ class LoginFragment : Fragment() {
         userInput[Constants.EMAIL_KEY] = login_email_edit_text.text.trim().toString()
         userInput[Constants.PASSWORD_KEY] = login_password_edit_text.text.trim().toString()
         return userInput
-    }
-
-    /**
-     * show error message to user
-     */
-    private fun showErrorMessage(messageId : Int){
-        login_error_text_view.visibility = View.VISIBLE
-        login_error_text_view.text = getString(messageId)
-        login_button.isClickable = true
-    }
-
-    private fun showErrorMessage(message : String?){
-        login_error_text_view.visibility = View.VISIBLE
-        login_error_text_view.text = message
-        login_button.isClickable = true
     }
 
     interface LoginTransitionInterface{
@@ -245,7 +230,7 @@ class LoginFragment : Fragment() {
     private fun signInWithGoogleCredential(account: GoogleSignInAccount) {
         Log.d(TAG, "Sign in with credential")
         //show loading progress bar
-        login_loading_progress_bar.visibility = View.VISIBLE
+        showLoading()
 
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
 
@@ -261,7 +246,7 @@ class LoginFragment : Fragment() {
                     } else {
                         // If sign in fails, display a message to the user.
                         //hide loading progress bar
-                        login_loading_progress_bar.visibility = View.GONE
+                        hideLoading()
 
                         showErrorMessage(R.string.error_login)
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
@@ -274,14 +259,14 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "got user")
 
             //hide loading progress bar
-            login_loading_progress_bar.visibility = View.GONE
+            hideLoading()
 
             navigateUser(it)
         }, {
             Log.d(TAG, "got no user with error: ${it.message}")
 
             //hide loading progress bar
-            login_loading_progress_bar.visibility = View.GONE
+            hideLoading()
 
             //show dialog to ask user whether he is a teacher or a student
             val input: HashMap<String, Any> = HashMap()
@@ -328,7 +313,7 @@ class LoginFragment : Fragment() {
     private fun handleFacebookAccessToken(token: AccessToken){
         Log.d(TAG, "handleFacebookAccessToken:$token")
         //show loading progress bar
-        login_loading_progress_bar.visibility = View.VISIBLE
+        showLoading()
 
         val credential = FacebookAuthProvider.getCredential(token.token)
         auth.signInWithCredential(credential)
@@ -337,19 +322,49 @@ class LoginFragment : Fragment() {
                     if (it.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
 
+                        //hide loading progress bar
+                        hideLoading()
+
+                        val user = auth.currentUser
                         checkUserExistence(user)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
 
                         //hide loading progress bar
-                        login_loading_progress_bar.visibility = View.GONE
+                        hideLoading()
 
                         Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
                     }
                 }
+    }
+
+    private fun showLoading() {
+        login_loading_progress_bar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        login_loading_progress_bar.visibility = View.GONE
+    }
+
+    /**
+     * show error message to user
+     */
+    private fun showErrorMessage(messageId : Int){
+        login_error_text_view.visibility = View.VISIBLE
+        login_error_text_view.text = getString(messageId)
+        login_button.isClickable = true
+    }
+
+    private fun showErrorMessage(message : String?){
+        login_error_text_view.visibility = View.VISIBLE
+        login_error_text_view.text = message
+        login_button.isClickable = true
+    }
+
+    private fun hideError() {
+        login_error_text_view.visibility = View.GONE
     }
 
 }

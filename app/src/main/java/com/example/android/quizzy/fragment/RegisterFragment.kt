@@ -81,7 +81,7 @@ class RegisterFragment : Fragment() {
             it.isClickable = false
 
             //hide error text view
-            register_error_text_view.visibility = View.GONE
+            hideError()
 
             //check internet connection
             if(!Utils.isNetworkConnected(context)){
@@ -114,18 +114,6 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun performNext(inputs : HashMap<String, Any>){
-        if(register_radio_student.isChecked){
-            transient.openFragment(RegisterStudentFragment.newInstance(inputs))
-        }
-        else if(register_radio_teacher.isChecked){
-            transient.openFragment(RegisterTeacherFragment.newInstance(inputs))
-        }
-        else{
-            showErrorMessage(R.string.check_student_teacher)
-        }
-    }
-
     private fun setClickLoginOnClickListener(){
         click_login_text_view.setOnClickListener{
             transient.openFragment(LoginFragment())
@@ -140,15 +128,6 @@ class RegisterFragment : Fragment() {
         userInput[Constants.EMAIL_KEY] = register_email_edit_text.text.trim().toString()
         userInput[Constants.PASSWORD_KEY] = register_password_edit_text.text.trim().toString()
         return userInput
-    }
-
-    /**
-     * show error message to user
-     */
-    private fun showErrorMessage(messageId : Int){
-        register_error_text_view.visibility = View.VISIBLE
-        register_error_text_view.text = getString(messageId)
-        next_button.isClickable = true
     }
 
     private fun authUsingGoogle() {
@@ -176,7 +155,7 @@ class RegisterFragment : Fragment() {
             // a listener.
             val result = GoogleSignIn.getSignedInAccountFromIntent(data)
 
-            handleRegisterResult(result)
+            handleGoogleRegisterResult(result)
         }
         else {     //result returning from facebook sign
             // Pass the activity result back to the Facebook SDK
@@ -185,11 +164,11 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun handleRegisterResult(task: Task<GoogleSignInAccount>) {
+    private fun handleGoogleRegisterResult(task: Task<GoogleSignInAccount>) {
         try {
             val account = task.getResult(ApiException::class.java)
             // Signed in successfully, show authenticated UI.
-            registerWithCredential(account)
+            registerWithGoogleCredential(account)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -199,7 +178,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun registerWithCredential(account: GoogleSignInAccount) {
+    private fun registerWithGoogleCredential(account: GoogleSignInAccount) {
         Log.d(TAG, "Sign in with credential")
         //show loading progress bar
         register_loading_progress_bar.visibility = View.VISIBLE
@@ -218,7 +197,7 @@ class RegisterFragment : Fragment() {
                     } else {
                         // If sign in fails, display a message to the user.
                         //hide loading progress bar
-                        register_loading_progress_bar.visibility = View.GONE
+                        hideLading()
 
                         showErrorMessage(R.string.error_login)
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
@@ -226,19 +205,22 @@ class RegisterFragment : Fragment() {
                 }
     }
 
+    /**
+     * checks if user exists in the database or not
+     */
     private fun checkUserExistence(currentUser: FirebaseUser?) {
         loginViewModel.getUser(currentUser?.uid).subscribe({
             Log.d(TAG, "got user")
 
             //hide loading progress bar
-            register_loading_progress_bar.visibility = View.GONE
+            hideLading()
 
             navigateUser(it)
         }, {
-            Log.d(TAG, "got no user")
+            Log.d(TAG, "got no user with error: ${it.message}")
 
             //hide loading progress bar
-            register_loading_progress_bar.visibility = View.GONE
+            hideLading()
 
             val input: HashMap<String, Any> = HashMap()
             input[Constants.ID_KEY] = currentUser?.uid as String
@@ -247,17 +229,20 @@ class RegisterFragment : Fragment() {
         })
     }
 
-    private fun navigateUser(it: User?) {
+    /**
+     * checks gotten user whether is a student or a teacher and sends appropriate values in the intent
+     */
+    private fun navigateUser(user: User) {
         //Open Main Activity and attach teacher's number
         val intent = Intent(context, MainActivity::class.java)
 
-        if (it is Teacher) {
-            Log.d(TAG, "Got teacher with number : " + it.telephoneNumber)
-            intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, it.telephoneNumber)
-        } else if (it is Student) {
-            Log.d(TAG, "Got student with teacher's number : " + it.teacherTelephoneNumber)
-            intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, it.teacherTelephoneNumber)
-            intent.putExtra(Constants.STUDENT_NAME_KEY, it.firstName + " " + it.lastName)
+        if (user is Teacher) {
+            Log.d(TAG, "Got teacher with number : " + user.telephoneNumber)
+            intent.putExtra(Constants.TELEPHONE_NUMBER_KEY, user.telephoneNumber)
+        } else if (user is Student) {
+            Log.d(TAG, "Got student with teacher's number : " + user.teacherTelephoneNumber)
+            intent.putExtra(Constants.TEACHER_TELEPHONE_NUMBER_KEY, user.teacherTelephoneNumber)
+            intent.putExtra(Constants.STUDENT_NAME_KEY, user.firstName + " " + user.lastName)
         } else {
             Log.d(TAG, "Neither a teacher nor a student")
             throw(Exception())
@@ -266,6 +251,18 @@ class RegisterFragment : Fragment() {
         startActivity(intent)
         activity?.finish()
         Toast.makeText(activity, R.string.already_member, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun performNext(inputs : HashMap<String, Any>){
+        if(register_radio_student.isChecked){
+            transient.openFragment(RegisterStudentFragment.newInstance(inputs))
+        }
+        else if(register_radio_teacher.isChecked){
+            transient.openFragment(RegisterTeacherFragment.newInstance(inputs))
+        }
+        else{
+            showErrorMessage(R.string.check_student_teacher)
+        }
     }
 
     private fun setFacebookRegisterButtonOnClickListener() {
@@ -304,7 +301,7 @@ class RegisterFragment : Fragment() {
     private fun handleFacebookAccessToken(token: AccessToken){
         Log.d(TAG, "handleFacebookAccessToken:$token")
         //show loading progress bar
-        register_loading_progress_bar.visibility = View.VISIBLE
+        showLoading()
 
         val credential = FacebookAuthProvider.getCredential(token.token)
         auth.signInWithCredential(credential)
@@ -313,19 +310,43 @@ class RegisterFragment : Fragment() {
                     if (it.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
 
+                        //hide loading progress bar
+                        hideLading()
+
+                        val user = auth.currentUser
                         checkUserExistence(user)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", it.exception)
 
                         //hide loading progress bar
-                        register_loading_progress_bar.visibility = View.GONE
+                        hideLading()
 
                         Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
                     }
                 }
+    }
+
+    /**
+     * show error message to user
+     */
+    private fun showErrorMessage(messageId : Int){
+        register_error_text_view.visibility = View.VISIBLE
+        register_error_text_view.text = getString(messageId)
+        next_button.isClickable = true
+    }
+
+    private fun showLoading() {
+        register_loading_progress_bar.visibility = View.VISIBLE
+    }
+
+    private fun hideLading() {
+        register_loading_progress_bar.visibility = View.GONE
+    }
+
+    private fun hideError() {
+        register_error_text_view.visibility = View.GONE
     }
 
 }
