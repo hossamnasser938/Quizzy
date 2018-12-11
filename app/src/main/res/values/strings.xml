@@ -31,7 +31,7 @@
     <string name="invalid_name">Please enter name consisting of only letters</string>
     <string name="invalid_telephone_number">Please enter telephone number consisting of only numbers</string>
     <string name="invalid_password">Please enter password of 6 characters or more</string>
-    <string name="check_student_teacher">Please check if you are a student or a teacher</string>
+    <string name="check_student_teacher">You are a new user, Please check if you are a student or a teacher</string>
     <string name="required_teacher_fields">Please enter at least first name, last name, subject and telephone number</string>
     <string name="required_student_fields">Please enter at least first name, last name, and teacher telephone number</string>
     <string name="logged_successfully">Logged Successfully</string>

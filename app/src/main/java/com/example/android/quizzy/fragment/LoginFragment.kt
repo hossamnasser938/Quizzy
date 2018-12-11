@@ -28,6 +28,7 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
@@ -273,6 +274,11 @@ class LoginFragment : Fragment() {
             input[Constants.ID_KEY] = currentUser?.uid as String
 
             val dialog = Student_TeacherDialog(context!!, this, input)
+            //if user dismisses the dialog, sign him out
+            dialog.setOnDismissListener{
+                auth.signOut()
+                LoginManager.getInstance().logOut()
+            }
             dialog.show()
         })
     }
@@ -304,7 +310,7 @@ class LoginFragment : Fragment() {
             }
 
             override fun onError(error: FacebookException) {
-                Log.d(TAG, "facebook:onError", error)
+                Log.d(TAG, "facebook:onError ${error.message}")
                 Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
             }
         })

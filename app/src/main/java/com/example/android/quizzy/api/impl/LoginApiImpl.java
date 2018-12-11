@@ -99,7 +99,7 @@ public class LoginApiImpl implements LoginApi {
      */
     @Override
     public Single<User> getUser(final String id){
-
+        Log.d(TAG, "getUser executes");
         final DatabaseReference teachersReference = FirebaseDatabase.getInstance().getReference().child(Constants.USERS_KEY).child(Constants.TEACHERS_KEY);
 
         return Single.create(new SingleOnSubscribe<User>() {
@@ -108,9 +108,10 @@ public class LoginApiImpl implements LoginApi {
                 teachersReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        final Iterator<DataSnapshot> iterable = dataSnapshot.getChildren().iterator();
-
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        final Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                        DataSnapshot snapshot;
+                        while(iterator.hasNext()) {
+                            snapshot = iterator.next();
                             Teacher teacher = snapshot.getValue(Teacher.class);
                             if(teacher != null){
                                 if(teacher.getId().contentEquals(id)) {
@@ -129,7 +130,7 @@ public class LoginApiImpl implements LoginApi {
                                             }
 
                                             //if it is the last teacher and no emit caused disposing occurred
-                                            if(!iterable.hasNext() && !emitter.isDisposed()){
+                                            if(!iterator.hasNext() && !emitter.isDisposed()){
                                                 Log.d(TAG, "Did not find user and sent error");
                                                 emitter.onError(new Throwable(Constants.NO_ACCOUNT));
                                             }
