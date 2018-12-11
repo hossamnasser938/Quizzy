@@ -53,7 +53,7 @@
     <string name="page4_description">Generate reports on students\' attitudes to promote the learning process</string>
     <string name="or_register_using">or register using</string>
     <string name="or_login_using">or login using</string>
-    <string name="you_are">You are?</string>
+    <string name="you_are">It is the first time to login. Please, tell us whether you are a teacher or a student</string>
     <string name="authenticating">Authenticating</string>
     <string name="email_permission">email</string>
     <string name="profile_permission">public_profile</string>

@@ -293,7 +293,7 @@ class RegisterFragment : Fragment() {
 
             override fun onError(error: FacebookException) {
                 Log.d(TAG, "facebook:onError", error)
-                Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+                showErrorMessage(error.message)
             }
         })
     }
@@ -323,7 +323,7 @@ class RegisterFragment : Fragment() {
                         //hide loading progress bar
                         hideLading()
 
-                        Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
+                        showErrorMessage(R.string.error_register)
                     }
                 }
     }
@@ -334,6 +334,12 @@ class RegisterFragment : Fragment() {
     private fun showErrorMessage(messageId : Int){
         register_error_text_view.visibility = View.VISIBLE
         register_error_text_view.text = getString(messageId)
+        next_button.isClickable = true
+    }
+
+    private fun showErrorMessage(message : String?){
+        register_error_text_view.visibility = View.VISIBLE
+        register_error_text_view.text = message
         next_button.isClickable = true
     }
 

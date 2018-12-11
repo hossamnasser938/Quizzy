@@ -311,7 +311,7 @@ class LoginFragment : Fragment() {
 
             override fun onError(error: FacebookException) {
                 Log.d(TAG, "facebook:onError ${error.message}")
-                Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+                showErrorMessage(error.message)
             }
         })
     }
@@ -341,7 +341,7 @@ class LoginFragment : Fragment() {
                         //hide loading progress bar
                         hideLoading()
 
-                        Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
+                        showErrorMessage(R.string.error_login)
                     }
                 }
     }
